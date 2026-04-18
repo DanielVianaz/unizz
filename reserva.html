@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reserva de Moeda · Unicâmbio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<section class="hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Início</a> · <span>Reserva de Moeda</span></div>
+    <div class="eyebrow" style="margin-top:16px;">Reserva de Moeda Estrangeira</div>
+    <h1>Reserve a sua moeda<br>antes de <span class="accent">viajar.</span></h1>
+    <p class="hero-sub">Simples e seguro. Trava o câmbio do momento, levanta a moeda no balcão mais conveniente — no centro da cidade ou à chegada ao aeroporto.</p>
+  </div>
+</section>
+
+<section class="section section-pad">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="eyebrow">Como reservar</div><h2>Quatro formas.<br>Uma experiência.</h2></div>
+      <p class="lede">Escolha o canal que lhe for mais conveniente. Todos têm o mesmo câmbio, as mesmas condições e a mesma segurança.</p>
+    </div>
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h16" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <h3>Em Balcão</h3>
+        <p>Dirija-se a qualquer um dos nossos 80+ balcões. Atendimento personalizado por técnicos especializados.</p>
+        <a href="balcoes.html" class="arrow">Ver balcões →</a>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11l5 5 9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Online</h3>
+        <p>Escolha moeda, montante, balcão e data. Câmbio travado até ao levantamento.</p>
+        <a href="#form" class="arrow">Reservar agora →</a>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="6" y="2" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="17" r="1" fill="currentColor"/></svg></div>
+        <h3>App Unimoney</h3>
+        <p>Click &amp; Collect direto no telemóvel. Sem custo de levantamento via app.</p>
+        <a href="https://unimoney.pt" class="arrow" target="_blank">unimoney.pt ↗</a>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 4l3-1 2 4-2 2a10 10 0 005 5l2-2 4 2-1 3a2 2 0 01-2 2A14 14 0 013 6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h3>Por Telefone</h3>
+        <p>Ligue 800 50 60 66 (gratuito, das 9h às 19h). Apoio humano em várias línguas.</p>
+        <a href="tel:800506066" class="arrow">800 50 60 66 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-pad">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);">
+      <div>
+        <div class="eyebrow">Informação útil</div>
+        <h2 style="font-size:clamp(36px,4.5vw,64px);letter-spacing:-0.04em;line-height:0.96;margin-top:18px;">Antes de reservar.</h2>
+        <ul class="dash-list" style="margin-top:32px;">
+          <li><strong style="color:var(--fg);">+50 moedas disponíveis</strong> — das principais às mais raras, com encomenda sob consulta.</li>
+          <li><strong style="color:var(--fg);">Prazo mínimo de 2 dias úteis</strong> antes do levantamento para reservas online.</li>
+          <li><strong style="color:var(--fg);">Sem necessidade de conta bancária</strong> — reserva online com cartão, levantamento em numerário.</li>
+          <li><strong style="color:var(--fg);">+80 balcões</strong> em todo o país, incluindo aeroportos e arquipélagos.</li>
+          <li><strong style="color:var(--fg);">Sem custo de levantamento</strong> via App Unimoney.</li>
+        </ul>
+      </div>
+      <div class="block" id="form">
+        <div class="eyebrow" style="margin-bottom:18px;">Formulário de reserva</div>
+        <h3 style="font-size:26px;letter-spacing:-0.02em;margin-bottom:24px;">Reserve em minutos.</h3>
+        <div id="reserva-sucesso" style="display:none;padding:24px;border-radius:12px;background:rgba(255,209,0,0.08);border:1px solid rgba(255,209,0,0.3);text-align:center;">
+          <div style="font-size:28px;margin-bottom:8px;">✓</div>
+          <strong style="color:var(--yellow);">Reserva recebida!</strong>
+          <p style="color:var(--fg-dim);margin-top:8px;font-size:14px;">Entraremos em contacto em breve para confirmar.</p>
+        </div>
+        <form class="form-grid" id="form-reserva">
+          <div class="form-field">
+            <label>Moeda</label>
+            <select id="r-moeda">
+              <option value="USD — Dólar Americano">USD — Dólar Americano</option>
+              <option value="GBP — Libra Esterlina">GBP — Libra Esterlina</option>
+              <option value="CHF — Franco Suíço">CHF — Franco Suíço</option>
+              <option value="JPY — Iene Japonês">JPY — Iene Japonês</option>
+              <option value="BRL — Real Brasileiro">BRL — Real Brasileiro</option>
+              <option value="CAD — Dólar Canadiano">CAD — Dólar Canadiano</option>
+              <option value="AUD — Dólar Australiano">AUD — Dólar Australiano</option>
+              <option value="CNY — Yuan Chinês">CNY — Yuan Chinês</option>
+              <option value="Outra">Outra (contactar balcão)</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Quantia (EUR)</label>
+            <input type="number" id="r-montante" placeholder="500" value="500" min="1">
+          </div>
+          <div class="form-field">
+            <label>Balcão de levantamento</label>
+            <select id="r-balcao">
+              <option value="Lisboa — Chiado">Lisboa — Chiado</option>
+              <option value="Lisboa — Aeroporto T1">Lisboa — Aeroporto T1</option>
+              <option value="Porto — Baixa">Porto — Baixa</option>
+              <option value="Porto — Aeroporto">Porto — Aeroporto</option>
+              <option value="Faro — Aeroporto">Faro — Aeroporto</option>
+              <option value="Funchal — Aeroporto">Funchal — Aeroporto</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Data de levantamento</label>
+            <input type="date" id="r-data">
+          </div>
+          <div class="form-field">
+            <label>Nome completo</label>
+            <input type="text" id="r-nome" placeholder="Maria Santos">
+          </div>
+          <div class="form-field">
+            <label>Email</label>
+            <input type="email" id="r-email" placeholder="maria@email.pt">
+          </div>
+          <div class="form-field full">
+            <label>Telemóvel</label>
+            <input type="tel" id="r-telemovel" placeholder="(+351) 912 345 678">
+          </div>
+          <div class="form-field full">
+            <p id="reserva-erro" style="display:none;color:#f87171;font-size:13px;margin-bottom:8px;"></p>
+            <button type="button" id="btn-reserva" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Confirmar Reserva</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>Viaja em breve?<br><span class="accent">Trave o câmbio hoje.</span></h2>
+    <div class="ctas">
+      <a href="#form" class="btn btn-primary btn-lg">Reservar Agora</a>
+      <a href="tel:800506066" class="btn btn-ghost btn-lg">Ligar 800 50 60 66</a>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="site.js"></script>
+<script>initNav('servicos');</script>
+<script>
+document.getElementById('btn-reserva').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-reserva');
+  const erro = document.getElementById('reserva-erro');
+  erro.style.display = 'none';
+
+  const payload = {
+    nome: document.getElementById('r-nome').value.trim(),
+    email: document.getElementById('r-email').value.trim(),
+    telemovel: document.getElementById('r-telemovel').value.trim(),
+    moeda: document.getElementById('r-moeda').value,
+    montante: document.getElementById('r-montante').value,
+    data_levantamento: document.getElementById('r-data').value,
+    balcao: document.getElementById('r-balcao').value,
+  };
+
+  if (!payload.nome || !payload.email || !payload.telemovel || !payload.data_levantamento) {
+    erro.textContent = 'Por favor preencha todos os campos obrigatórios.';
+    erro.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = 'A enviar…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/reserva/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      document.getElementById('form-reserva').style.display = 'none';
+      document.getElementById('reserva-sucesso').style.display = 'block';
+    } else {
+      const data = await res.json();
+      erro.textContent = data.erro || 'Erro ao enviar. Tente novamente.';
+      erro.style.display = 'block';
+      btn.textContent = 'Confirmar Reserva';
+      btn.disabled = false;
+    }
+  } catch {
+    erro.textContent = 'Sem ligação ao servidor. Tente mais tarde.';
+    erro.style.display = 'block';
+    btn.textContent = 'Confirmar Reserva';
+    btn.disabled = false;
+  }
+});
+</script>
+</body></html>
