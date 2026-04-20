@@ -40,16 +40,7 @@
       <form class="form-grid" id="form-contacto">
         <div class="form-field"><label>Nome</label><input type="text" id="c-nome"></div>
         <div class="form-field"><label>Email</label><input type="email" id="c-email"></div>
-        <div class="form-field full"><label>Assunto</label>
-          <select id="c-assunto">
-            <option value="Reserva de Moeda">Reserva de Moeda</option>
-            <option value="Western Union">Western Union</option>
-            <option value="Compra de Ouro">Compra de Ouro</option>
-            <option value="Crédito Pessoal">Crédito Pessoal</option>
-            <option value="Empresas">Empresas</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
+        <div class="form-field full"><label>Assunto</label><select id="c-assunto"><option value="Reserva de Moeda">Reserva de Moeda</option><option value="Western Union">Western Union</option><option value="Compra de Ouro">Compra de Ouro</option><option value="Crédito Pessoal">Crédito Pessoal</option><option value="Empresas">Empresas</option><option value="Outro">Outro</option></select></div>
         <div class="form-field full"><label>Mensagem</label><textarea rows="5" id="c-mensagem"></textarea></div>
         <div class="form-field full">
           <p id="contacto-erro" style="display:none;color:#f87171;font-size:13px;margin-bottom:8px;"></p>
@@ -65,23 +56,19 @@ document.getElementById('btn-contacto').addEventListener('click', async () => {
   const btn = document.getElementById('btn-contacto');
   const erro = document.getElementById('contacto-erro');
   erro.style.display = 'none';
-
   const payload = {
     nome: document.getElementById('c-nome').value.trim(),
     email: document.getElementById('c-email').value.trim(),
     assunto: document.getElementById('c-assunto').value,
     mensagem: document.getElementById('c-mensagem').value.trim(),
   };
-
   if (!payload.nome || !payload.email || !payload.mensagem) {
     erro.textContent = 'Por favor preencha nome, email e mensagem.';
     erro.style.display = 'block';
     return;
   }
-
   btn.textContent = 'A enviar…';
   btn.disabled = true;
-
   try {
     const res = await fetch('/api/contacto/', {
       method: 'POST',

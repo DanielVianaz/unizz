@@ -3,156 +3,563 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Homepage · Unicâmbio</title>
+<title>Unicâmbio · A maior casa de câmbios de Portugal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<style>
+/* ── HERO 3D ── */
+#hero-3d {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #060606;
+}
+
+/* Left fade so text is always readable */
+#hero-3d::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg,
+      #060606 0%,
+      #060606 28%,
+      rgba(6,6,6,0.82) 42%,
+      rgba(6,6,6,0.3) 58%,
+      rgba(6,6,6,0.05) 72%,
+      transparent 100%),
+    linear-gradient(to bottom, #060606 0%, transparent 8%, transparent 92%, #060606 100%);
+}
+
+/* Canvas fills the ENTIRE hero — globe is a composition element, not a widget */
+#globe-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative; z-index: 10;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(100px,12vh,140px) var(--pad) clamp(80px,10vh,120px);
+}
+.hero-text {
+  max-width: 580px;
+}
+
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid rgba(255,209,0,0.25);
+  background: rgba(255,209,0,0.06);
+  border-radius: 999px;
+  padding: 7px 14px 7px 10px;
+  margin-bottom: 36px;
+}
+.hero-kicker .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 8px 2px rgba(255,209,0,0.6);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { box-shadow: 0 0 6px 2px rgba(255,209,0,0.5); }
+  50%      { box-shadow: 0 0 14px 4px rgba(255,209,0,0.9); }
+}
+.hero-kicker span {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--yellow);
+}
+
+.hero-h1 {
+  font-size: clamp(52px, 7.5vw, 112px);
+  line-height: 0.93;
+  letter-spacing: -0.048em;
+  font-weight: 500;
+  max-width: 720px;
+  text-wrap: balance;
+}
+.hero-h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--yellow);
+}
+
+.hero-sub {
+  margin-top: 28px;
+  max-width: 480px;
+  color: #8a8a8a;
+  font-size: 17px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.hero-actions {
+  margin-top: 40px;
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+
+/* Floating currency labels on globe (HTML overlay) */
+#currency-labels {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.clabel {
+  position: fixed;
+  display: flex; align-items: center; gap: 7px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.clabel .cdot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 6px 2px rgba(255,209,0,0.4);
+  flex-shrink: 0;
+}
+.clabel.bright { color: rgba(255,255,255,0.85); }
+.clabel.bright .cdot { width: 7px; height: 7px; }
+
+/* ── TICKER ── */
+.ticker-bar {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255,209,0,0.025);
+  overflow: hidden;
+  height: 42px;
+  display: flex; align-items: center;
+  position: relative;
+}
+.ticker-bar::before, .ticker-bar::after {
+  content: "";
+  position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+  pointer-events: none;
+}
+.ticker-bar::before { left: 0;  background: linear-gradient(to right, #060606, transparent); }
+.ticker-bar::after  { right: 0; background: linear-gradient(to left,  #060606, transparent); }
+.ticker-track {
+  display: flex; align-items: center; gap: 0;
+  animation: ticker-scroll 42s linear infinite;
+  white-space: nowrap;
+}
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 28px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px; letter-spacing: 0.06em;
+  color: var(--fg-dim);
+  border-right: 1px solid var(--line);
+}
+.ticker-item .pair { color: var(--fg); font-weight: 500; }
+.ticker-item .up   { color: #4ade80; }
+.ticker-item .dn   { color: #f87171; }
+
+/* ── STATS ── */
+.stats-3d {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-bottom: 1px solid var(--line);
+}
+.stat-3d {
+  padding: 40px 32px;
+  border-right: 1px solid var(--line);
+  position: relative; overflow: hidden;
+  transition: background 0.3s;
+}
+.stat-3d:last-child { border-right: none; }
+.stat-3d:hover { background: rgba(255,209,0,0.03); }
+.stat-3d::before {
+  content: "";
+  position: absolute; bottom: -20px; left: -10px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(255,209,0,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.stat-3d .n {
+  font-size: clamp(40px,5vw,64px);
+  font-weight: 500; letter-spacing: -0.05em; line-height: 1;
+  font-feature-settings: "tnum";
+}
+.stat-3d .n .u { color: var(--yellow); }
+.stat-3d .l {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--fg-faint);
+  margin-top: 8px;
+}
+@media (max-width: 880px) {
+  .stats-3d { grid-template-columns: repeat(2,1fr); }
+  .stat-3d:nth-child(2) { border-right: none; }
+  .stat-3d:nth-child(3) { border-top: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .stat-3d:nth-child(4) { border-top: 1px solid var(--line); border-right: none; }
+}
+
+/* ── SERVICES ROW ── */
+.services-row {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-bottom: 1px solid var(--line);
+}
+.srv {
+  padding: 44px 32px;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 18px;
+  position: relative; transition: background 0.25s;
+  cursor: pointer; text-decoration: none; color: inherit;
+}
+.srv:last-child { border-right: none; }
+.srv:hover { background: rgba(255,255,255,0.015); }
+.srv-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: rgba(255,209,0,0.07);
+  border: 1px solid rgba(255,209,0,0.18);
+  color: var(--yellow);
+  transition: background 0.25s;
+}
+.srv:hover .srv-icon { background: rgba(255,209,0,0.14); }
+.srv h3 { font-size: 20px; letter-spacing: -0.02em; line-height: 1.2; }
+.srv p  { font-size: 13px; color: var(--fg-dim); line-height: 1.55; flex: 1; }
+.srv .go {
+  font-family: 'Geist Mono', monospace; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--yellow); display: flex; gap: 6px; align-items: center;
+  transition: gap 0.2s;
+}
+.srv:hover .go { gap: 10px; }
+@media (max-width: 1080px) { .services-row { grid-template-columns: repeat(2,1fr); } .srv:nth-child(2) { border-right: none; } .srv:nth-child(3) { border-top: 1px solid var(--line); border-right: 1px solid var(--line); } .srv:nth-child(4) { border-top: 1px solid var(--line); border-right: none; } }
+@media (max-width: 640px) { .services-row { grid-template-columns: 1fr; } .srv { border-right: none !important; border-top: 1px solid var(--line); } }
+
+/* ── UNIMONEY FEATURE ── */
+.unimoney-section {
+  padding: clamp(80px,10vw,140px) 0;
+  border-bottom: 1px solid var(--line);
+  position: relative; overflow: hidden;
+}
+.unimoney-section::before {
+  content: "";
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(255,209,0,0.04) 0%, transparent 65%);
+  pointer-events: none;
+}
+.uni-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px,6vw,100px);
+  align-items: center;
+}
+@media (max-width: 880px) { .uni-grid { grid-template-columns: 1fr; } }
+.uni-label {
+  font-family: 'Geist Mono', monospace; font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--yellow); margin-bottom: 24px;
+  display: flex; gap: 8px; align-items: center;
+}
+.uni-label::before { content:""; width:24px; height:1px; background:var(--yellow); }
+.uni-h2 {
+  font-size: clamp(40px,5.5vw,80px);
+  line-height: 0.94; letter-spacing: -0.045em;
+  font-weight: 500;
+}
+.uni-h2 em { font-style: italic; font-weight: 300; color: var(--yellow); }
+.uni-sub {
+  margin-top: 24px; font-size: 16px; color: #8a8a8a;
+  line-height: 1.6; max-width: 460px;
+}
+.uni-steps {
+  margin-top: 40px;
+  display: flex; flex-direction: column; gap: 0;
+  border-top: 1px solid var(--line);
+}
+.uni-step {
+  display: flex; gap: 20px; align-items: flex-start;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.uni-step-num {
+  font-family: 'Geist Mono', monospace; font-size: 11px;
+  color: var(--yellow); letter-spacing: 0.1em; width: 22px;
+  flex-shrink: 0; margin-top: 2px;
+}
+.uni-step-body h4 { font-size: 16px; letter-spacing: -0.01em; }
+.uni-step-body p  { font-size: 13px; color: var(--fg-dim); margin-top: 4px; line-height: 1.5; }
+
+/* Mockup card */
+.mockup-card {
+  background: #0e0e0e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,209,0,0.08);
+}
+.mockup-card::before {
+  content: "";
+  position: absolute; top: -80px; right: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,209,0,0.07) 0%, transparent 70%);
+}
+.mc-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px;
+}
+.mc-head .app-logo {
+  font-size: 13px; font-weight: 600; letter-spacing: -0.02em;
+}
+.mc-head .app-logo span { color: var(--yellow); }
+.mc-status {
+  font-family: 'Geist Mono', monospace; font-size: 10px;
+  color: #4ade80; letter-spacing: 0.1em;
+  display: flex; gap: 5px; align-items: center;
+}
+.mc-status::before { content:""; width:5px; height:5px; border-radius:50%; background:#4ade80; }
+.mc-balance-label {
+  font-family: 'Geist Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-faint);
+}
+.mc-balance {
+  font-size: 44px; font-weight: 500; letter-spacing: -0.05em;
+  line-height: 1.1; margin: 6px 0 4px;
+}
+.mc-balance .curr { font-size: 22px; color: var(--fg-dim); font-weight: 300; }
+.mc-change {
+  font-family: 'Geist Mono', monospace; font-size: 12px;
+  color: #4ade80; margin-bottom: 28px;
+}
+.mc-rows {
+  display: flex; flex-direction: column; gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.mc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.mc-row .pair { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; }
+.mc-row .rate { font-family: 'Geist Mono', monospace; font-size: 13px; }
+.mc-row .rate.hot { color: var(--yellow); }
+.mc-cta {
+  margin-top: 20px;
+  background: var(--yellow);
+  color: #0a0a0a;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  font-weight: 600; font-size: 14px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+
+/* ── BLOG ── */
+.blog-row {
+  padding: clamp(72px,9vw,120px) 0;
+  border-bottom: 1px solid var(--line);
+}
+.section-title-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 48px;
+}
+.section-title-row h2 {
+  font-size: clamp(36px,5vw,72px);
+  letter-spacing: -0.04em; line-height: 0.96;
+  font-weight: 500;
+}
+.section-title-row a {
+  font-family: 'Geist Mono', monospace; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--yellow); display: flex; gap: 6px;
+}
+
+/* ── CTA FINAL ── */
+.cta-final {
+  padding: clamp(100px,13vw,160px) 0;
+  text-align: center;
+  position: relative; overflow: hidden;
+  background: #060606;
+}
+.cta-final::before {
+  content: "";
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: min(900px,120vw); height: min(900px,120vw);
+  background: radial-gradient(circle, rgba(255,209,0,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.cta-final h2 {
+  font-size: clamp(52px,8vw,124px);
+  line-height: 0.92; letter-spacing: -0.05em; font-weight: 500;
+  text-wrap: balance; max-width: 960px; margin: 0 auto 40px;
+  position: relative; z-index: 1;
+}
+.cta-final h2 em { font-style: italic; font-weight: 300; color: var(--yellow); }
+.cta-final .ctas { position: relative; z-index: 1; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+</style>
 </head>
-<body>
+<body style="background:#060606;">
 <div id="site-nav"></div>
 
-<section class="hero">
-  <div class="container">
-    <div class="eyebrow">Fundada em 1992 · Regulada pelo Banco de Portugal</div>
-    <h1>A maior casa de câmbios<br>de Portugal. <span class="accent">Desde 1992.</span></h1>
-    <p class="hero-sub">Câmbio de moeda, transferências internacionais, compra de ouro e muito mais. Mais de 80 balcões em todo o país, incluindo aeroportos.</p>
-    <div class="hero-ctas">
-      <a href="reserva.html" class="btn btn-primary btn-lg">Reservar Moeda
+<!-- ════════ HERO ════════ -->
+<section id="hero-3d">
+  <canvas id="globe-canvas"></canvas>
+  <div id="currency-labels"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+    <div class="hero-kicker">
+      <span class="dot"></span>
+      <span>Regulada pelo Banco de Portugal · #824</span>
+    </div>
+    <h1 class="hero-h1">
+      A maior casa<br>de câmbios<br>de <em>Portugal.</em>
+    </h1>
+    <p class="hero-sub">Mais de 80 balcões em todo o país. Câmbio, transferências internacionais, compra de ouro e muito mais — desde 1992.</p>
+    <div class="hero-actions">
+      <a href="reserva.html#form" class="btn btn-primary btn-lg">
+        Reservar Moeda
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10m-5-5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
       <a href="balcoes.html" class="btn btn-ghost btn-lg">Ver Balcões</a>
     </div>
-  </div>
-</section>
-
-<section class="stats">
-  <div class="stats-grid">
-    <div class="stat"><div class="stat-value">80<span class="unit">+</span></div><div class="stat-label">Balcões em Portugal</div></div>
-    <div class="stat"><div class="stat-value">50<span class="unit">+</span></div><div class="stat-label">Moedas disponíveis</div></div>
-    <div class="stat"><div class="stat-value">30<span class="unit">+</span></div><div class="stat-label">Anos de experiência</div></div>
-    <div class="stat"><div class="stat-value">5<span class="unit"></span></div><div class="stat-label">Aeroportos · LIS OPO FAO FNC PDL</div></div>
-  </div>
-</section>
-
-<section class="section section-pad">
-  <div class="container">
-    <div class="section-head">
-      <div><div class="eyebrow">Serviços</div><h2>Tudo o que precisa<br>num só sítio.</h2></div>
-      <p class="lede">De câmbio presencial a crédito pessoal, de transferências internacionais à compra de ouro. Serviços financeiros especializados há mais de três décadas.</p>
-    </div>
-    <div class="grid-4">
-      <a href="cambios.html" class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 6h11l-3-3M18 16H7l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Câmbio de Moeda</h3>
-        <p>Mais de 50 divisas, presencialmente ou com reserva online — ao câmbio do momento.</p>
-        <span class="arrow">Explorar →</span>
-      </a>
-      <a href="western-union.html" class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 11h15M11 3.5c2.5 3 2.5 12 0 15M11 3.5c-2.5 3-2.5 12 0 15" stroke="currentColor" stroke-width="1.2"/></svg></div>
-        <h3>Western Union</h3>
-        <p>Envie e receba dinheiro em minutos para mais de 200 países e territórios.</p>
-        <span class="arrow">Explorar →</span>
-      </a>
-      <a href="ouro.html" class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3l3 4h6l-4 5 2 7-7-4-7 4 2-7L2 7h6l3-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-        <h3>Compra de Ouro</h3>
-        <p>Avaliação gratuita por peritos certificados pela Casa da Moeda. Pagamento imediato.</p>
-        <span class="arrow">Explorar →</span>
-      </a>
-      <a href="credito.html" class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h16" stroke="currentColor" stroke-width="1.5"/></svg></div>
-        <h3>Crédito Pessoal</h3>
-        <p>Empréstimos até 10.000€ em parceria com BBVA Consumer Finance.</p>
-        <span class="arrow">Explorar →</span>
-      </a>
     </div>
   </div>
 </section>
 
-<section class="section section-pad" style="background:linear-gradient(180deg,transparent,rgba(255,209,0,0.02));">
+<!-- ════════ TICKER ════════ -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- ════════ STATS ════════ -->
+<section class="stats-3d">
+  <div class="stat-3d"><div class="n">80<span class="u">+</span></div><div class="l">Balcões em Portugal</div></div>
+  <div class="stat-3d"><div class="n">50<span class="u">+</span></div><div class="l">Moedas disponíveis</div></div>
+  <div class="stat-3d"><div class="n">0<span class="u">€</span></div><div class="l">Comissão de levantamento</div></div>
+  <div class="stat-3d"><div class="n">5</div><div class="l">Aeroportos: LIS OPO FAO FNC PDL</div></div>
+</section>
+
+<!-- ════════ SERVICES ════════ -->
+<section class="services-row">
+  <a href="cambios.html" class="srv">
+    <div class="srv-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 6h11l-3-3M18 16H7l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h3>Câmbio de Moeda</h3>
+    <p>50+ divisas em stock, ao câmbio do momento. Presencial ou com reserva online.</p>
+    <span class="go">Explorar <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  </a>
+  <a href="western-union.html" class="srv">
+    <div class="srv-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="7.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 11h15M11 3.5c2.5 3 2.5 12 0 15M11 3.5c-2.5 3-2.5 12 0 15" stroke="currentColor" stroke-width="1.2"/></svg></div>
+    <h3>Western Union</h3>
+    <p>Envio e receção internacional em minutos para mais de 200 países.</p>
+    <span class="go">Explorar <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  </a>
+  <a href="ouro.html" class="srv">
+    <div class="srv-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3l3 4h6l-4 5 2 7-7-4-7 4 2-7L2 7h6l3-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+    <h3>Compra de Ouro</h3>
+    <p>Avaliação gratuita por peritos certificados INCM. Pagamento imediato.</p>
+    <span class="go">Explorar <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  </a>
+  <a href="empresas.html" class="srv">
+    <div class="srv-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M3 10h16M8 6V4h6v2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+    <h3>Empresas</h3>
+    <p>Ripple, tesouraria, câmbios B2B e terminais de pagamento.</p>
+    <span class="go">Explorar <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  </a>
+</section>
+
+<!-- ════════ UNIMONEY ════════ -->
+<section class="unimoney-section">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);align-items:center;">
+    <div class="uni-grid">
       <div>
-        <div class="eyebrow">Wallet Unimoney</div>
-        <h2 style="font-size:clamp(36px,5vw,72px);letter-spacing:-0.04em;line-height:0.96;margin-top:18px;">A tua carteira digital.<br>Câmbio na <span style="color:var(--yellow);font-style:italic;">app</span>,<br>levantamento no balcão.</h2>
-        <p style="color:var(--fg-dim);margin-top:24px;font-size:16px;line-height:1.55;max-width:460px;">Reserva, troca e levanta moeda estrangeira em mais de 80 balcões — direto do teu telemóvel. Sem filas, sem comissões.</p>
-        <div style="margin-top:32px;display:flex;gap:10px;flex-wrap:wrap;">
-          <a href="#" class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M11.5 8.5c0-1.5 1.2-2.2 1.3-2.3-.7-1-1.8-1.1-2.2-1.1-.9-.1-1.8.5-2.3.5s-1.2-.5-2-.5c-1 0-2 .6-2.5 1.5-1.1 1.9-.3 4.6.8 6.1.5.7 1.1 1.5 1.9 1.5.8 0 1-.5 2-.5s1.1.5 2 .5c.8 0 1.4-.7 1.9-1.5.6-.8.8-1.7.8-1.7s-1.7-.7-1.7-2.5z" fill="currentColor"/></svg>
-            App Store
-          </a>
-          <a href="#" class="btn btn-ghost">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2l8 6-8 6V2z" stroke="currentColor" stroke-width="1.4"/></svg>
-            Google Play
-          </a>
-          <a href="https://unimoney.pt" class="btn btn-ghost" target="_blank">Saber Mais ↗</a>
+        <div class="uni-label">Wallet Unimoney</div>
+        <h2 class="uni-h2">Câmbio<br>na app,<br>levantamento<br>no <em>balcão.</em></h2>
+        <p class="uni-sub">Reserve online, trave o câmbio do dia e levante no balcão da sua escolha — sem filas, sem comissões. Disponível em iOS e Android.</p>
+        <div class="uni-steps">
+          <div class="uni-step">
+            <div class="uni-step-num">01</div>
+            <div class="uni-step-body"><h4>Abra a app Unimoney</h4><p>Crie a sua conta em minutos, sem documentos.</p></div>
+          </div>
+          <div class="uni-step">
+            <div class="uni-step-num">02</div>
+            <div class="uni-step-body"><h4>Escolha moeda e balcão</h4><p>50+ divisas. Escolha o balcão e a data de levantamento.</p></div>
+          </div>
+          <div class="uni-step">
+            <div class="uni-step-num">03</div>
+            <div class="uni-step-body"><h4>Levante a sua moeda</h4><p>Mostre o QR no balcão e receba o dinheiro em mãos.</p></div>
+          </div>
+        </div>
+        <div style="margin-top:36px;display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="#" class="btn btn-primary"><svg width="13" height="14" viewBox="0 0 13 14" fill="none"><path d="M9.5 7.5c0-1.2 1-1.8 1-1.8-.5-.8-1.4-.9-1.8-.9-.7-.1-1.4.4-1.8.4s-.9-.4-1.6-.4c-.8 0-1.6.5-2 1.2-.9 1.5-.2 3.7.6 4.9.4.6.9 1.2 1.5 1.2.6 0 .8-.4 1.6-.4s.9.4 1.6.4c.6 0 1.1-.6 1.5-1.2.5-.7.7-1.4.7-1.4s-1.3-.5-1.3-2z" fill="currentColor"/></svg>App Store</a>
+          <a href="#" class="btn btn-ghost"><svg width="13" height="14" viewBox="0 0 13 14" fill="none"><path d="M2 2.5l9 4.5-9 4.5V2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Google Play</a>
         </div>
       </div>
-      <div style="position:relative;">
-        <div class="block" style="padding:40px;">
-          <div class="eyebrow" style="margin-bottom:20px;">Hoje na Unimoney</div>
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px dashed var(--line);">
-            <span style="color:var(--fg-dim);font-size:13px;">EUR → USD · 500€</span>
-            <span class="mono" style="font-size:18px;color:var(--yellow);">542,10 $</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px dashed var(--line);">
-            <span style="color:var(--fg-dim);font-size:13px;">EUR → GBP · 300€</span>
-            <span class="mono" style="font-size:18px;">256,83 £</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;">
-            <span style="color:var(--fg-dim);font-size:13px;">EUR → JPY · 200€</span>
-            <span class="mono" style="font-size:18px;">32 696 ¥</span>
-          </div>
-          <div style="margin-top:12px;padding:14px;border-radius:10px;background:var(--yellow);color:var(--bg);text-align:center;font-weight:600;font-size:14px;">Levanta em Lisboa · Chiado</div>
+
+      <!-- MOCKUP -->
+      <div class="mockup-card">
+        <div class="mc-head">
+          <div class="app-logo">uni<span>money</span></div>
+          <div class="mc-status">LIVE</div>
         </div>
+        <div class="mc-balance-label">Moedas disponíveis</div>
+        <div class="mc-balance">50<span class="curr">+</span></div>
+        <div class="mc-change">Câmbio travado no momento da reserva</div>
+        <div class="mc-rows">
+          <div class="mc-row"><span class="pair">USD — Dólar Americano</span><span class="rate hot">✓</span></div>
+          <div class="mc-row"><span class="pair">GBP — Libra Esterlina</span><span class="rate">✓</span></div>
+          <div class="mc-row"><span class="pair">BRL — Real Brasileiro</span><span class="rate">✓</span></div>
+          <div class="mc-row"><span class="pair">JPY — Iene Japonês</span><span class="rate">✓</span></div>
+          <div class="mc-row"><span class="pair">CHF — Franco Suíço</span><span class="rate">✓</span></div>
+        </div>
+        <div class="mc-cta" onclick="location.href='reserva.html'">Reservar Moeda →</div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section section-pad">
+<!-- ════════ BLOG ════════ -->
+<section class="blog-row">
   <div class="container">
-    <div class="section-head">
-      <div><div class="eyebrow">Blog</div><h2>Notícias, dicas<br>e novidades.</h2></div>
-      <p class="lede">Conteúdos práticos sobre viagens, câmbios, finanças pessoais e gestão de orçamento. Atualizados semanalmente.</p>
+    <div class="section-title-row">
+      <h2>Dicas e<br>novidades.</h2>
+      <a href="blog.html">Ver todos <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
     <div class="blog-grid">
       <a href="blog.html" class="post-card">
         <div class="post-thumb"><span class="chip">Finanças</span><span class="post-thumb-glyph">€</span></div>
-        <div class="post-body">
-          <div class="post-date">26 Mar 2026</div>
-          <div class="post-title">O peso de chegar ao final do mês: trabalho, despesas e cansaço</div>
-          <p class="post-excerpt">Estratégias práticas para gerir o orçamento mensal sem comprometer a qualidade de vida.</p>
-          <span class="post-read">Ler artigo →</span>
-        </div>
+        <div class="post-body"><div class="post-date">26 Mar 2026</div><div class="post-title">O peso de chegar ao final do mês: trabalho, despesas e cansaço</div><p class="post-excerpt">Estratégias práticas para gerir o orçamento mensal sem comprometer a qualidade de vida.</p><span class="post-read">Ler artigo →</span></div>
       </a>
       <a href="blog.html" class="post-card">
         <div class="post-thumb"><span class="chip">Segurança</span><span class="post-thumb-glyph">⧗</span></div>
-        <div class="post-body">
-          <div class="post-date">11 Fev 2026</div>
-          <div class="post-title">Quando tudo muda: como proteger o seu dinheiro e os seus dados?</div>
-          <p class="post-excerpt">Boas práticas de cibersegurança e gestão financeira num mundo que muda rapidamente.</p>
-          <span class="post-read">Ler artigo →</span>
-        </div>
+        <div class="post-body"><div class="post-date">11 Fev 2026</div><div class="post-title">Quando tudo muda: como proteger o seu dinheiro e os seus dados?</div><p class="post-excerpt">Boas práticas de cibersegurança e gestão financeira num mundo digital.</p><span class="post-read">Ler artigo →</span></div>
       </a>
       <a href="blog.html" class="post-card">
-        <div class="post-thumb"><span class="chip">Orçamento</span><span class="post-thumb-glyph">※</span></div>
-        <div class="post-body">
-          <div class="post-date">26 Jan 2026</div>
-          <div class="post-title">Despesas inesperadas. Como estar preparado?</div>
-          <p class="post-excerpt">Construir um fundo de emergência e opções de financiamento quando tudo falha.</p>
-          <span class="post-read">Ler artigo →</span>
-        </div>
+        <div class="post-thumb"><span class="chip">Viagens</span><span class="post-thumb-glyph">✈</span></div>
+        <div class="post-body"><div class="post-date">7 Jan 2026</div><div class="post-title">Viajar em 2026: porque deve reservar moeda estrangeira com antecedência</div><p class="post-excerpt">Trave o câmbio e evite filas — um guia prático para a próxima viagem.</p><span class="post-read">Ler artigo →</span></div>
       </a>
     </div>
   </div>
 </section>
 
-<section class="cta-band">
+<!-- ════════ CTA FINAL ════════ -->
+<section class="cta-final">
   <div class="container">
-    <div class="eyebrow center">Pronto para começar?</div>
-    <h2>Reserve hoje.<br>Levante <span class="accent">quando puder.</span></h2>
+    <h2>Troque moeda.<br><em>Levante onde queres.</em></h2>
     <div class="ctas">
       <a href="reserva.html" class="btn btn-primary btn-lg">Reservar Moeda</a>
       <a href="balcoes.html" class="btn btn-ghost btn-lg">Ver Balcões</a>
@@ -163,4 +570,236 @@
 <div id="site-footer"></div>
 <script src="site.js"></script>
 <script>initNav('');</script>
-</body></html>
+
+<!-- THREE.JS GLOBE -->
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script>
+(function () {
+  const canvas = document.getElementById('globe-canvas');
+  const hero   = document.getElementById('hero-3d');
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+  camera.position.z = 2.8;
+
+  const globeGroup = new THREE.Group();
+  scene.add(globeGroup);
+  const R = 1;
+
+  /* 1. DARK PLANET BODY — establishes the sphere silhouette */
+  globeGroup.add(new THREE.Mesh(
+    new THREE.SphereGeometry(R, 64, 64),
+    new THREE.MeshBasicMaterial({ color: 0x080600, transparent: true, opacity: 0.97 })
+  ));
+
+  /* 2. CIRCULAR DOT TEXTURE */
+  const dc = document.createElement('canvas'); dc.width = dc.height = 64;
+  const dx = dc.getContext('2d');
+  const dg = dx.createRadialGradient(32,32,0,32,32,30);
+  dg.addColorStop(0,   'rgba(255,255,255,1)');
+  dg.addColorStop(0.45,'rgba(255,255,255,0.85)');
+  dg.addColorStop(1,   'rgba(255,255,255,0)');
+  dx.fillStyle = dg; dx.beginPath(); dx.arc(32,32,32,0,Math.PI*2); dx.fill();
+  const dotTex = new THREE.CanvasTexture(dc);
+
+  /* 3. DOT CLOUD */
+  const N = 8000;
+  const P = new Float32Array(N*3);
+  const C = new Float32Array(N*3);
+  const PHI = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i/(N-1))*2, r = Math.sqrt(Math.max(0,1-y*y)), t = PHI*i;
+    P[i*3]   = r*Math.cos(t)*R;
+    P[i*3+1] = y*R;
+    P[i*3+2] = r*Math.sin(t)*R;
+    C[i*3] = 1; C[i*3+1] = 0.82; C[i*3+2] = 0;
+  }
+  const dotGeo = new THREE.BufferGeometry();
+  dotGeo.setAttribute('position', new THREE.Float32BufferAttribute(P,3));
+  dotGeo.setAttribute('color',    new THREE.Float32BufferAttribute(C,3));
+  const dotMat = new THREE.PointsMaterial({
+    size:0.02, vertexColors:true, transparent:true, opacity:1,
+    map:dotTex, alphaTest:0.04, depthWrite:false, sizeAttenuation:true
+  });
+  globeGroup.add(new THREE.Points(dotGeo, dotMat));
+
+  /* 4. GRID LINES */
+  function latLine(lat) {
+    const pts=[], phi=(90-lat)*Math.PI/180;
+    for(let i=0;i<=128;i++){const th=i/128*Math.PI*2; pts.push(new THREE.Vector3(Math.sin(phi)*Math.cos(th)*R,Math.cos(phi)*R,Math.sin(phi)*Math.sin(th)*R));}
+    return pts;
+  }
+  function lonLine(lon) {
+    const pts=[], th=lon*Math.PI/180;
+    for(let i=0;i<=100;i++){const phi=i/100*Math.PI; pts.push(new THREE.Vector3(Math.sin(phi)*Math.cos(th)*R,Math.cos(phi)*R,Math.sin(phi)*Math.sin(th)*R));}
+    return pts;
+  }
+  [-60,-30,0,30,60].forEach(lat=>{
+    const m=new THREE.LineBasicMaterial({color:0xFFD100,transparent:true,opacity:lat===0?0.28:0.08});
+    globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(latLine(lat)),m));
+  });
+  for(let l=0;l<360;l+=30){
+    const m=new THREE.LineBasicMaterial({color:0xFFD100,transparent:true,opacity:0.06});
+    globeGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(lonLine(l)),m));
+  }
+
+  /* 5. ATMOSPHERE LAYERS — this makes it look like a real planet */
+  [
+    {r:1.32, op:0.11, c:0xFFD100},
+    {r:1.18, op:0.08, c:0xFFD100},
+    {r:1.08, op:0.05, c:0xFFE866},
+  ].forEach(({r,op,c})=>{
+    globeGroup.add(new THREE.Mesh(
+      new THREE.SphereGeometry(r,64,64),
+      new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:op,side:THREE.BackSide})
+    ));
+  });
+
+  /* 6. CURRENCY PINS */
+  const PINS = [
+    {label:'USD',lat:38, lon:-97, big:true },
+    {label:'EUR',lat:51, lon:10,  big:true },
+    {label:'GBP',lat:51, lon:-0.1,big:false},
+    {label:'BRL',lat:-15,lon:-47, big:true },
+    {label:'JPY',lat:35, lon:135, big:false},
+    {label:'CHF',lat:46, lon:8,   big:false},
+    {label:'AED',lat:24, lon:54,  big:false},
+    {label:'CNY',lat:35, lon:105, big:false},
+    {label:'ZAR',lat:-30,lon:25,  big:false},
+    {label:'CAD',lat:56, lon:-106,big:false},
+    {label:'AUD',lat:-25,lon:134, big:false},
+  ];
+  const pinMeshes=[];
+  PINS.forEach(p=>{
+    const phi=(90-p.lat)*Math.PI/180, th=(p.lon+180)*Math.PI/180;
+    const m=new THREE.Mesh(
+      new THREE.SphereGeometry(p.big?0.026:0.014,8,8),
+      new THREE.MeshBasicMaterial({color:0xFFD100,transparent:true,opacity:p.big?0.95:0.5})
+    );
+    m.position.set(-(R*Math.sin(phi)*Math.cos(th)), R*Math.cos(phi), R*Math.sin(phi)*Math.sin(th));
+    m.userData.baseOp=m.material.opacity;
+    globeGroup.add(m); pinMeshes.push(m);
+  });
+
+  /* 7. HTML LABELS */
+  const labelsEl=document.getElementById('currency-labels');
+  const labelDivs={};
+  PINS.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='clabel'+(p.big?' bright':'');
+    d.innerHTML='<span class="cdot"></span>'+p.label;
+    labelsEl.appendChild(d); labelDivs[p.label]=d;
+  });
+
+  /* RESIZE — globe sits at 62% from left, fills height */
+  function resize(){
+    const W=hero.offsetWidth, H=hero.offsetHeight;
+    renderer.setSize(W,H);
+    camera.aspect=W/H; camera.updateProjectionMatrix();
+    // Shift globe to right half — offset depends on aspect ratio
+    // Push globe firmly into right half
+    globeGroup.position.x = camera.aspect * 0.22;
+    globeGroup.position.y = -0.05; // slight downward shift so top atmosphere shows
+  }
+
+  const clock=new THREE.Clock();
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{
+    mx=(e.clientX/window.innerWidth-0.5)*2;
+    my=(e.clientY/window.innerHeight-0.5)*2;
+  });
+
+  /* GLOBE SIZE: scale to fill ~68% of viewport height, keeping it fully visible */
+  function updateScale(){
+    const H=hero.offsetHeight;
+    const fovRad = camera.fov * Math.PI/180;
+    const visibleHeight = 2 * Math.tan(fovRad/2) * camera.position.z;
+    const desiredFraction = 0.56; // globe = 68% of viewport height
+    const scale = desiredFraction * visibleHeight / 2;
+    globeGroup.scale.setScalar(scale);
+  }
+
+  function tick(){
+    requestAnimationFrame(tick);
+    const t=clock.getElapsedTime();
+    const ry=t*0.07+mx*0.1, rx=my*0.06;
+    globeGroup.rotation.y=ry; globeGroup.rotation.x=rx;
+
+    /* depth-shade dots: bright front hemisphere, dark back */
+    const cosY=Math.cos(ry),sinY=Math.sin(ry),cosX=Math.cos(rx),sinX=Math.sin(rx);
+    for(let i=0;i<N;i++){
+      const ox=P[i*3],oy=P[i*3+1],oz=P[i*3+2];
+      const rz=(-ox*sinY+oz*cosY)*cosX-oy*sinX;
+      const d=Math.max(0,rz/R);
+      const b=d*d;  // sharp terminator
+      C[i*3]=b; C[i*3+1]=b*(209/255); C[i*3+2]=0;
+    }
+    dotGeo.attributes.color.needsUpdate=true;
+
+    pinMeshes.forEach((m,i)=>{
+      m.material.opacity=m.userData.baseOp*(0.6+0.4*Math.sin(t*2+i));
+    });
+
+    renderer.render(scene,camera);
+
+    /* position HTML labels */
+    const rect=canvas.getBoundingClientRect();
+    const cW=canvas.offsetWidth,cH=canvas.offsetHeight;
+    pinMeshes.forEach((mesh,i)=>{
+      const wp=mesh.getWorldPosition(new THREE.Vector3());
+      const sc=wp.clone().project(camera);
+      const sx=(sc.x+1)/2*cW, sy=(-sc.y+1)/2*cH;
+      const d=labelDivs[PINS[i].label]; if(!d) return;
+      // Backface cull using local Z
+      const lp=mesh.position.clone();
+      const lrz=(-lp.x*sinY+lp.z*cosY)*cosX-lp.y*sinX;
+      if(lrz<0.06){d.style.opacity='0';return;}
+      d.style.opacity=Math.min(1,lrz*4).toString();
+      d.style.left=(rect.left+sx)+'px';
+      d.style.top=(rect.top+sy+22)+'px';
+    });
+  }
+
+  resize(); updateScale(); tick();
+  window.addEventListener('resize',()=>{resize();updateScale();});
+})();
+</script>
+
+<!-- TICKER DATA -->
+<script>
+(function(){
+  const currencies = [
+    'USD','GBP','BRL','JPY','CHF','AED','CNY','CAD','AUD','ZAR',
+    'TRY','INR','MXN','NOK','SEK','DKK','PLN','HUF','RON','CZK',
+    'HKD','SGD','NZD','MYR','IDR','PHP','KRW','THB','VND','SAR',
+    'QAR','EGP','ILS','TND','MAD','CVE','MZN','NAD','ARS','COP',
+    'CLP','DOP','RUB','UAH','ISK','XAF','XOF',
+  ];
+  // Duplicate for seamless infinite scroll
+  const all = [...currencies, ...currencies];
+  const track = document.getElementById('ticker');
+  track.innerHTML = all.map(c =>
+    `<span class="ticker-item"><span class="pair">${c}</span></span>`
+  ).join('');
+})();
+</script>
+
+
+
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="200" fill="#060606"/>
+    <circle cx="210" cy="100" r="60" fill="none" stroke="#FFD100" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="210" cy="100" r="40" fill="none" stroke="#FFD100" stroke-width="0.5" opacity="0.2"/>
+    <text x="50" y="85" font-family="sans-serif" font-size="28" font-weight="600" fill="white" letter-spacing="-1">A maior casa</text>
+    <text x="50" y="118" font-family="sans-serif" font-size="28" font-weight="300" fill="#FFD100" letter-spacing="-1" font-style="italic">de câmbios.</text>
+    <text x="50" y="150" font-family="monospace" font-size="10" fill="#666" letter-spacing="2">UNICÂMBIO · 1992</text>
+  </svg>
+</template>
+</body>
+</html>

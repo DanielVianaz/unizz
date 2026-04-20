@@ -82,16 +82,56 @@
           <div class="form-field">
             <label>Moeda</label>
             <select id="r-moeda">
-              <option value="USD — Dólar Americano">USD — Dólar Americano</option>
-              <option value="GBP — Libra Esterlina">GBP — Libra Esterlina</option>
-              <option value="CHF — Franco Suíço">CHF — Franco Suíço</option>
-              <option value="JPY — Iene Japonês">JPY — Iene Japonês</option>
-              <option value="BRL — Real Brasileiro">BRL — Real Brasileiro</option>
-              <option value="CAD — Dólar Canadiano">CAD — Dólar Canadiano</option>
-              <option value="AUD — Dólar Australiano">AUD — Dólar Australiano</option>
-              <option value="CNY — Yuan Chinês">CNY — Yuan Chinês</option>
-              <option value="Outra">Outra (contactar balcão)</option>
-            </select>
+                    <option value="USD">USD — Dólar Americano</option>
+                    <option value="GBP">GBP — Libra Esterlina</option>
+                    <option value="BRL">BRL — Real Brasileiro</option>
+                    <option value="JPY">JPY — Iene Japonês</option>
+                    <option value="CHF">CHF — Franco Suíço</option>
+                    <option value="AED">AED — Dirham Emirados</option>
+                    <option value="CNY">CNY — Yuan Chinês</option>
+                    <option value="CAD">CAD — Dólar Canadiano</option>
+                    <option value="AUD">AUD — Dólar Australiano</option>
+                    <option value="ZAR">ZAR — Rand Sul-Africano</option>
+                    <option value="TRY">TRY — Lira Turca</option>
+                    <option value="INR">INR — Rupia Indiana</option>
+                    <option value="MXN">MXN — Peso Mexicano</option>
+                    <option value="NOK">NOK — Coroa Norueguesa</option>
+                    <option value="SEK">SEK — Coroa Sueca</option>
+                    <option value="DKK">DKK — Coroa Dinamarquesa</option>
+                    <option value="PLN">PLN — Zloty Polaco</option>
+                    <option value="HUF">HUF — Forint Húngaro</option>
+                    <option value="RON">RON — Leu Romeno</option>
+                    <option value="CZK">CZK — Coroa Checa</option>
+                    <option value="HKD">HKD — Dólar Hong Kong</option>
+                    <option value="SGD">SGD — Dólar Singapura</option>
+                    <option value="NZD">NZD — Dólar Neozelandês</option>
+                    <option value="MYR">MYR — Ringgit Malásia</option>
+                    <option value="IDR">IDR — Rupia Indonésia</option>
+                    <option value="PHP">PHP — Peso Filipino</option>
+                    <option value="KRW">KRW — Won Sul-Coreano</option>
+                    <option value="THB">THB — Baht Tailandês</option>
+                    <option value="VND">VND — Dong Vietnamita</option>
+                    <option value="SAR">SAR — Riyal Saudita</option>
+                    <option value="QAR">QAR — Riyal Catar</option>
+                    <option value="EGP">EGP — Libra Egípcia</option>
+                    <option value="ILS">ILS — Shekel Israelita</option>
+                    <option value="TND">TND — Dinar Tunisino</option>
+                    <option value="MAD">MAD — Dirham Marroquino</option>
+                    <option value="CVE">CVE — Escudo Cabo-Verdiano</option>
+                    <option value="MZN">MZN — Metical Moçambicano</option>
+                    <option value="NAD">NAD — Dólar Namibiano</option>
+                    <option value="ARS">ARS — Peso Argentino</option>
+                    <option value="COP">COP — Peso Colombiano</option>
+                    <option value="CLP">CLP — Peso Chileno</option>
+                    <option value="DOP">DOP — Peso Dominicano</option>
+                    <option value="RUB">RUB — Rublo Russo</option>
+                    <option value="UAH">UAH — Hryvnia Ucraniana</option>
+                    <option value="ISK">ISK — Coroa Islandesa</option>
+                    <option value="KHR">KHR — Riel Cambojano</option>
+                    <option value="MOP">MOP — Pataca Macau</option>
+                    <option value="XAF">XAF — Franco CFA Central</option>
+                    <option value="XOF">XOF — Franco CFA Oeste</option>
+                  </select>
           </div>
           <div class="form-field">
             <label>Quantia (EUR)</label>
@@ -99,14 +139,7 @@
           </div>
           <div class="form-field">
             <label>Balcão de levantamento</label>
-            <select id="r-balcao">
-              <option value="Lisboa — Chiado">Lisboa — Chiado</option>
-              <option value="Lisboa — Aeroporto T1">Lisboa — Aeroporto T1</option>
-              <option value="Porto — Baixa">Porto — Baixa</option>
-              <option value="Porto — Aeroporto">Porto — Aeroporto</option>
-              <option value="Faro — Aeroporto">Faro — Aeroporto</option>
-              <option value="Funchal — Aeroporto">Funchal — Aeroporto</option>
-            </select>
+            <select id="r-balcao"><option value="Lisboa — Chiado">Lisboa — Chiado</option><option value="Lisboa — Aeroporto T1">Lisboa — Aeroporto T1</option><option value="Porto — Baixa">Porto — Baixa</option><option value="Porto — Aeroporto">Porto — Aeroporto</option><option value="Faro — Aeroporto">Faro — Aeroporto</option><option value="Funchal — Aeroporto">Funchal — Aeroporto</option></select>
           </div>
           <div class="form-field">
             <label>Data de levantamento</label>
@@ -121,7 +154,7 @@
             <input type="email" id="r-email" placeholder="maria@email.pt">
           </div>
           <div class="form-field full">
-            <label>Telemóvel</label>
+            <label>Telefone</label>
             <input type="tel" id="r-telemovel" placeholder="(+351) 912 345 678">
           </div>
           <div class="form-field full">
@@ -152,7 +185,6 @@ document.getElementById('btn-reserva').addEventListener('click', async () => {
   const btn = document.getElementById('btn-reserva');
   const erro = document.getElementById('reserva-erro');
   erro.style.display = 'none';
-
   const payload = {
     nome: document.getElementById('r-nome').value.trim(),
     email: document.getElementById('r-email').value.trim(),
@@ -162,16 +194,13 @@ document.getElementById('btn-reserva').addEventListener('click', async () => {
     data_levantamento: document.getElementById('r-data').value,
     balcao: document.getElementById('r-balcao').value,
   };
-
   if (!payload.nome || !payload.email || !payload.telemovel || !payload.data_levantamento) {
     erro.textContent = 'Por favor preencha todos os campos obrigatórios.';
     erro.style.display = 'block';
     return;
   }
-
   btn.textContent = 'A enviar…';
   btn.disabled = true;
-
   try {
     const res = await fetch('/api/reserva/', {
       method: 'POST',
