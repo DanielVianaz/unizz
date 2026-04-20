@@ -7,6 +7,7 @@ const UNI_NAV = `
     <div class="topbar-right">
       <span class="hide-sm">Fora de Portugal: <a href="tel:+351300509120" class="phone">(+351) 300 509 120</a></span>
       <a href="contactos.html" class="hide-sm">info@unicambio.pt</a>
+      <a href="denuncias.html" class="hide-sm" style="color:var(--yellow);">Denúncias</a>
     </div>
   </div>
 </div>
@@ -105,17 +106,20 @@ const UNI_FOOTER = `
         <a href="blog.html">Blog</a>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
-        <a href="#">Preçário (PDF)</a>
-        <a href="#">Documento de Informação sobre Comissões</a>
-        <a href="#">Política de Privacidade</a>
-        <a href="#">Informações Legais</a>
-        <a href="https://www.livroreclamacoes.pt/inicio" target="_blank">Livro de Reclamações ↗</a>
-        <a href="#">Resolução de Conflitos</a>
-        <a href="#">Canal de Denúncias</a>
-        <a href="#">Reporte de Fraude</a>
-        <a href="#">Serviço de Mudança de Conta</a>
-        <a href="#">API PSD2</a>
+        <h4>Documentos</h4>
+        <a href="files/precario.pdf" target="_blank" rel="noopener noreferrer">Preçário (PDF) ↗</a>
+        <a href="files/comissoes.pdf" target="_blank" rel="noopener noreferrer">Informação sobre Comissões ↗</a>
+        <a href="privacidade.html">Política de Privacidade</a>
+        <a href="informacoes-legais.html">Informações Legais</a>
+      </div>
+      <div class="footer-col">
+        <h4>Apoio ao Cliente</h4>
+        <a href="contactos.html">Contactos</a>
+        <a href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener noreferrer">Livro de Reclamações ↗</a>
+        <a href="resolucao-conflitos.html">Resolução de Conflitos</a>
+        <a href="fraude.html">Reporte de Fraude</a>
+        <a href="denuncias.html">Canal de Denúncias</a>
+        <a href="mudanca-conta.html">Serviço de Mudança de Conta</a>
       </div>
     </div>
     <p class="footer-legal-text">Unicâmbio — Instituição de Pagamento, S.A., autorizada e regulada pelo Banco de Portugal, registo nº 824. Capital Social: 2.000.000€. Sede: Aeroporto de Lisboa, Rua C, Edifício 124, 5º Piso, 1700-008 Lisboa. NIF: 502 870 206.</p>
