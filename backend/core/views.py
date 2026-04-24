@@ -28,16 +28,16 @@ def criar_reserva(request):
 
     try:
         reserva = Reserva.objects.create(
-            nome=data['nome'],
-            email=data['email'],
-            telemovel=data['telemovel'],
-            moeda=data['moeda'],
+            nome=data['nome'][:200],
+            email=data['email'][:254],
+            telemovel=data['telemovel'][:30],
+            moeda=data['moeda'][:100],
             montante=data['montante'],
             data_levantamento=data['data_levantamento'],
-            balcao=data['balcao'],
+            balcao=data['balcao'][:200],
         )
-    except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+    except Exception:
+        return JsonResponse({'erro': 'Erro interno. Tente novamente.'}, status=500)
 
     # Email de notificação
     try:
@@ -77,13 +77,13 @@ def criar_contacto(request):
 
     try:
         contacto = Contacto.objects.create(
-            nome=data['nome'],
-            email=data['email'],
-            assunto=data.get('assunto', 'Outro'),
-            mensagem=data['mensagem'],
+            nome=data['nome'][:200],
+            email=data['email'][:254],
+            assunto=data.get('assunto', 'Outro')[:100],
+            mensagem=data['mensagem'][:5000],
         )
-    except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+    except Exception:
+        return JsonResponse({'erro': 'Erro interno. Tente novamente.'}, status=500)
 
     try:
         send_mail(

@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 
 urlpatterns = [
     path('', lambda r: HttpResponseRedirect('/index.html')),
-    path('admin/', admin.site.urls),
+    path('uc-backoffice-2024/', admin.site.urls),
     path('api/', include('core.urls')),
 ]
 

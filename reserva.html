@@ -157,6 +157,9 @@
             <label>Telefone</label>
             <input type="tel" id="r-telemovel" placeholder="(+351) 912 345 678">
           </div>
+          <div class="form-field full" style="display:none" aria-hidden="true">
+            <input type="text" id="r-hp" name="website" tabindex="-1" autocomplete="off">
+          </div>
           <div class="form-field full">
             <p id="reserva-erro" style="display:none;color:#f87171;font-size:13px;margin-bottom:8px;"></p>
             <button type="button" id="btn-reserva" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Confirmar Reserva</button>
@@ -181,7 +184,17 @@
 <script src="site.js"></script>
 <script>initNav('servicos');</script>
 <script>
+
+let _reservaLastSubmit = 0;
 document.getElementById('btn-reserva').addEventListener('click', async () => {
+  const now = Date.now();
+  if (now - _reservaLastSubmit < 30000) {
+    const s = Math.ceil((30000 - (now - _reservaLastSubmit)) / 1000);
+    document.getElementById('reserva-erro').textContent = `Aguarde ${s}s antes de submeter novamente.`;
+    document.getElementById('reserva-erro').style.display = 'block';
+    return;
+  }
+  if (document.getElementById('r-hp').value) return;
   const btn = document.getElementById('btn-reserva');
   const erro = document.getElementById('reserva-erro');
   erro.style.display = 'none';
@@ -190,7 +203,7 @@ document.getElementById('btn-reserva').addEventListener('click', async () => {
     email: document.getElementById('r-email').value.trim(),
     telemovel: document.getElementById('r-telemovel').value.trim(),
     moeda: document.getElementById('r-moeda').value,
-    montante: document.getElementById('r-montante').value,
+    montante: parseFloat(document.getElementById('r-montante').value),
     data_levantamento: document.getElementById('r-data').value,
     balcao: document.getElementById('r-balcao').value,
   };
@@ -202,17 +215,23 @@ document.getElementById('btn-reserva').addEventListener('click', async () => {
   btn.textContent = 'A enviar…';
   btn.disabled = true;
   try {
-    const res = await fetch('/api/reserva/', {
+    const res = await fetch(`${SUPA_URL}/rest/v1/reservas`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+        'Prefer': 'return=minimal'
+      },
       body: JSON.stringify(payload),
     });
     if (res.ok) {
+      _reservaLastSubmit = Date.now();
       document.getElementById('form-reserva').style.display = 'none';
       document.getElementById('reserva-sucesso').style.display = 'block';
     } else {
       const data = await res.json();
-      erro.textContent = data.erro || 'Erro ao enviar. Tente novamente.';
+      erro.textContent = data.message || 'Erro ao enviar. Tente novamente.';
       erro.style.display = 'block';
       btn.textContent = 'Confirmar Reserva';
       btn.disabled = false;
