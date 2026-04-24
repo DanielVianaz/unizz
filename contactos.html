@@ -78,6 +78,11 @@ document.getElementById('btn-contacto').addEventListener('click', async () => {
     erro.style.display = 'block';
     return;
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+    erro.textContent = 'Email inválido.';
+    erro.style.display = 'block';
+    return;
+  }
   btn.textContent = 'A enviar…';
   btn.disabled = true;
   try {

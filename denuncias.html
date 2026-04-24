@@ -344,6 +344,40 @@ document.getElementById('btn-denuncia').addEventListener('click', async () => {
   const temDoc = document.querySelector('input[name="documentacao"]:checked').value === 'sim';
   const reporteAnterior = document.querySelector('input[name="reporte_anterior"]:checked').value === 'sim';
 
+  // Upload do ficheiro para o Supabase Storage
+  let ficheiroUrl = null;
+  let ficheiroNome = null;
+  if (temDoc) {
+    const ficheiro = document.getElementById('d-ficheiro').files[0];
+    if (ficheiro) {
+      btn.textContent = 'A enviar ficheiro…';
+      const ext = ficheiro.name.split('.').pop();
+      const caminho = `${codigo}.${ext}`;
+      const uploadRes = await fetch(`${SUPA_URL}/storage/v1/object/denuncias-ficheiros/${caminho}`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': `Bearer ${SUPA_KEY}`,
+          'Content-Type': ficheiro.type,
+          'x-upsert': 'true',
+        },
+        body: ficheiro,
+      });
+      if (uploadRes.ok) {
+        ficheiroUrl = `${SUPA_URL}/storage/v1/object/denuncias-ficheiros/${caminho}`;
+        ficheiroNome = ficheiro.name;
+      } else {
+        const errGeral = document.getElementById('erro-geral');
+        errGeral.textContent = 'Erro ao enviar ficheiro. Tente novamente.';
+        errGeral.style.display = 'block';
+        btn.textContent = 'Submeter Denúncia';
+        btn.disabled = false;
+        return;
+      }
+      btn.textContent = 'A submeter…';
+    }
+  }
+
   const denuncia = {
     codigo,
     identificado,
@@ -358,20 +392,9 @@ document.getElementById('btn-denuncia').addEventListener('click', async () => {
     tem_documentacao: temDoc,
     reporte_anterior: reporteAnterior,
     meio_reporte: reporteAnterior ? document.getElementById('d-meio-reporte').value.trim() || null : null,
+    ficheiro_url: ficheiroUrl,
+    ficheiro_nome: ficheiroNome,
   };
-
-  // ============================================================
-  // TODO: INTEGRAÇÃO RAILWAY (alternativa ao Supabase)
-  // Se migrar para Railway no futuro, substituir o fetch abaixo por:
-  //
-  // const response = await fetch('https://api.railway.app/denuncias', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(denuncia)
-  // });
-  //
-  // O objeto `denuncia` já está estruturado para essa integração.
-  // ============================================================
 
   try {
     const res = await fetch(`${SUPA_URL}/rest/v1/denuncias`, {

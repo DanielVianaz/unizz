@@ -144,6 +144,7 @@
           <div class="form-field">
             <label>Data de levantamento</label>
             <input type="date" id="r-data">
+            <p id="r-data-erro" style="display:none;color:#f87171;font-size:12px;margin-top:4px;"></p>
           </div>
           <div class="form-field">
             <label>Nome completo</label>
@@ -185,6 +186,13 @@
 <script>initNav('servicos');</script>
 <script>
 
+// Definir data mínima no campo (2 dias úteis a partir de hoje)
+(function() {
+  let diasUteis = 0, d = new Date(); d.setHours(0,0,0,0);
+  while (diasUteis < 2) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6) diasUteis++; }
+  document.getElementById('r-data').min = d.toISOString().split('T')[0];
+})();
+
 let _reservaLastSubmit = 0;
 document.getElementById('btn-reserva').addEventListener('click', async () => {
   const now = Date.now();
@@ -210,6 +218,25 @@ document.getElementById('btn-reserva').addEventListener('click', async () => {
   if (!payload.nome || !payload.email || !payload.telemovel || !payload.data_levantamento) {
     erro.textContent = 'Por favor preencha todos os campos obrigatórios.';
     erro.style.display = 'block';
+    return;
+  }
+  // Validar telefone
+  const telLimpo = payload.telemovel.replace(/[\s\-().+]/g, '');
+  if (!/^\d{7,15}$/.test(telLimpo)) {
+    erro.textContent = 'Número de telefone inválido.';
+    erro.style.display = 'block';
+    return;
+  }
+  // Validar data mínima (2 dias úteis)
+  const dataErrEl = document.getElementById('r-data-erro');
+  dataErrEl.style.display = 'none';
+  const dataEscolhida = new Date(payload.data_levantamento);
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  let diasUteis = 0, d = new Date(hoje);
+  while (diasUteis < 2) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6) diasUteis++; }
+  if (dataEscolhida < d) {
+    dataErrEl.textContent = `Data mínima: ${d.toLocaleDateString('pt-PT')} (2 dias úteis).`;
+    dataErrEl.style.display = 'block';
     return;
   }
   btn.textContent = 'A enviar…';
