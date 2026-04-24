@@ -1,57 +1,389 @@
 <!doctype html>
-<html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Balcões · Unicâmbio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css"></head><body><div id="site-nav"></div>
-<section class="hero"><div class="container">
-  <div class="breadcrumb"><a href="index.html">Início</a> · <span>Balcões</span></div>
-  <div class="eyebrow" style="margin-top:16px;">Rede nacional · 82+ balcões</div>
-  <h1>Encontre o balcão<br>mais <span class="accent">próximo de si.</span></h1>
-  <p class="hero-sub">82 balcões de Norte a Sul, incluindo os aeroportos de Lisboa, Porto, Faro, Madeira e Açores. Ilhas e continente — estamos onde precisa de nós.</p>
-</div></section>
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+#mapa { height: 540px; border-radius: 16px; border: 1px solid var(--line); overflow: hidden; }
+.leaflet-container { background: #111; font-family: 'Geist', sans-serif; }
+.leaflet-tile-pane { filter: brightness(0.85) saturate(0.7); }
+.balcao-popup { font-family: 'Geist', sans-serif; min-width: 180px; }
+.balcao-popup strong { font-size: 14px; color: #111; display: block; margin-bottom: 4px; }
+.balcao-popup span { font-size: 12px; color: #555; font-family: 'Geist Mono', monospace; letter-spacing: 0.05em; }
+.balcao-popup a { display: inline-block; margin-top: 8px; font-size: 12px; color: #c9a000; text-decoration: none; }
+.btn-raio { padding: 7px 13px; border-radius: 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--fg-dim); font-size: 13px; cursor: pointer; transition: all 0.15s; font-family: 'Geist Mono', monospace; }
+.btn-raio:hover { border-color: var(--yellow); color: var(--fg); }
+.btn-raio.active { background: var(--yellow); color: #000; border-color: var(--yellow); font-weight: 600; }
+.branch-result { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; }
+.branch-result:hover { background: rgba(255,255,255,0.04); border-color: var(--line); }
+.branch-result.destacado { background: rgba(255,209,0,0.06); border-color: rgba(255,209,0,0.2); }
+.branch-result-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+.branch-result-dot.aeroporto { box-shadow: 0 0 0 3px rgba(255,209,0,0.25); }
+.branch-result-name { font-size: 13px; color: var(--fg); flex: 1; }
+.branch-result-dist { font-size: 11px; color: var(--fg-faint); font-family: 'Geist Mono', monospace; }
+.branch-result-tag { font-size: 10px; color: var(--fg-faint); font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; }
+#lista-balcoes { max-height: 440px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+#lista-balcoes::-webkit-scrollbar { width: 4px; }
+#lista-balcoes::-webkit-scrollbar-track { background: transparent; }
+#lista-balcoes::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+#msg-balcoes { font-size: 13px; color: var(--fg-dim); padding: 16px 12px; text-align: center; }
+.geo-btn { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--fg-dim); font-size: 13px; cursor: pointer; transition: all 0.15s; width: 100%; }
+.geo-btn:hover { border-color: var(--yellow); color: var(--fg); }
+.dist-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; background: rgba(255,209,0,0.1); color: var(--yellow); font-size: 11px; font-family: 'Geist Mono', monospace; margin-left: 6px; }
+@media (max-width: 768px) {
+  .mapa-layout { grid-template-columns: 1fr !important; }
+  #mapa { height: 380px; }
+  #lista-balcoes { max-height: 300px; }
+}
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
 
-<section class="section section-pad"><div class="container">
-  <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,5vw,64px);align-items:start;">
-    <div>
-      <div class="eyebrow">Encontrar próximo</div>
-      <h2 style="font-size:clamp(28px,3.5vw,44px);letter-spacing:-0.03em;margin-top:14px;">Mapa interativo.</h2>
-      <p style="color:var(--fg-dim);font-size:14px;line-height:1.55;margin-top:18px;max-width:420px;">Ative a localização ou escreva a sua morada. Filtre por raio para encontrar apenas os balcões mais convenientes.</p>
+<section class="hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Início</a> · <span>Balcões</span></div>
+    <div class="eyebrow" style="margin-top:16px;">Rede nacional · 82+ balcões</div>
+    <h1>Encontre o balcão<br>mais <span class="accent">próximo de si.</span></h1>
+    <p class="hero-sub">82 balcões de Norte a Sul, incluindo os aeroportos de Lisboa, Porto, Faro, Madeira e Açores.</p>
+  </div>
+</section>
 
-      <div class="block" style="margin-top:28px;padding:24px;">
-        <div class="form-field" style="margin-bottom:16px;"><label>A sua morada ou código postal</label><input type="text" placeholder="ex: Av. da Liberdade, Lisboa"></div>
-        <div class="form-field"><label>Raio de procura</label>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
-            <button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">2 km</button><button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">5 km</button><button type="button" class="btn btn-primary btn-sm" style="padding:8px 12px;">10 km</button><button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">20 km</button><button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">30 km</button><button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">40 km</button><button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">50 km</button><button type="button" class="btn btn-ghost btn-sm" style="padding:8px 12px;">75 km</button>
+<section class="section section-pad">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start;" class="mapa-layout">
+
+      <!-- Painel lateral -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Localização -->
+        <button class="geo-btn" id="btn-geo">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Usar a minha localização
+        </button>
+
+        <!-- Pesquisa por morada -->
+        <div class="form-field" style="margin:0;">
+          <label>Pesquisar por morada ou cidade</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="input-morada" placeholder="ex: Av. da Liberdade, Lisboa" style="flex:1;">
+            <button type="button" id="btn-pesquisar" class="btn btn-primary btn-sm" style="white-space:nowrap;">Pesquisar</button>
+          </div>
+        </div>
+
+        <!-- Raio -->
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:8px;">Raio de procura</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn-raio" data-km="2">2 km</button>
+            <button class="btn-raio" data-km="5">5 km</button>
+            <button class="btn-raio active" data-km="10">10 km</button>
+            <button class="btn-raio" data-km="20">20 km</button>
+            <button class="btn-raio" data-km="50">50 km</button>
+          </div>
+        </div>
+
+        <!-- Resultados -->
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);">Balcões</div>
+            <span id="contador-balcoes" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--yellow);">82</span>
+          </div>
+          <div id="lista-balcoes">
+            <div id="msg-balcoes">Active a localização ou pesquise uma morada para ver os balcões mais próximos.</div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="minimap">
-      <div class="map-pin big" data-label="LIS" style="left:28%;top:52%;"></div>
-      <div class="map-pin" data-label="OPO" style="left:26%;top:28%;"></div>
-      <div class="map-pin" data-label="FAO" style="left:36%;top:82%;"></div>
-      <div class="map-pin" data-label="FNC" style="left:8%;top:72%;"></div>
-      <div class="map-pin" data-label="PDL" style="left:72%;top:48%;"></div>
-      <div class="map-pin" style="left:30%;top:44%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div class="map-pin" style="left:26%;top:58%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div class="map-pin" style="left:32%;top:62%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div class="map-pin" style="left:34%;top:78%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div class="map-pin" style="left:40%;top:80%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div class="map-pin" style="left:25%;top:35%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div class="map-pin" style="left:22%;top:45%;width:6px;height:6px;box-shadow:0 0 0 3px rgba(255,209,0,0.15);"></div>
-      <div style="position:absolute;bottom:14px;right:16px;font-family:'Geist Mono',monospace;font-size:10px;color:var(--fg-faint);letter-spacing:0.1em;text-transform:uppercase;">82+ BALCÕES</div>
+
+      <!-- Mapa -->
+      <div id="mapa"></div>
     </div>
   </div>
-</div></section>
+</section>
 
-<section class="section section-pad"><div class="container">
-  <div class="section-head"><div><div class="eyebrow">Todos os balcões</div><h2>De Lisboa<br>a Ponta Delgada.</h2></div><p class="lede">Os balcões assinalados com um ponto amarelo indicam unidades em aeroportos — abertos durante os horários de operações.</p></div>
-  <div class="branches-grid"><div class="branch-item featured"><span class="branch-dot"></span><span class="branch-name">Aeroporto Funchal</span><span class="branch-tag">AEROPORTO</span></div><div class="branch-item featured"><span class="branch-dot"></span><span class="branch-name">Aeroporto Ponta Delgada</span><span class="branch-tag">AEROPORTO</span></div><div class="branch-item featured"><span class="branch-dot"></span><span class="branch-name">Aeroporto Porto</span><span class="branch-tag">AEROPORTO</span></div><div class="branch-item featured"><span class="branch-dot"></span><span class="branch-name">Aeroporto de Faro</span><span class="branch-tag">AEROPORTO</span></div><div class="branch-item featured"><span class="branch-dot"></span><span class="branch-name">Aeroporto de Lisboa</span><span class="branch-tag">AEROPORTO</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Albufeira 5 Outubro</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Albufeira Av. 25 de Abril</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Albufeira Av. da Liberdade</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Albufeira II</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Albufeira Miguel Bombarda</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Albufeira Terrace</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Almada Fórum</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Almancil</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Almirante Reis</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Alvor</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Amadora</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Amadora II</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Aveiro</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Aveiro — Pingo Doce</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Braga</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Braga Parque</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Braga II</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Cacém</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Carvoeiro</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Cascais</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">CC Alegro Alfragide</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">CC Alegro Sintra</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">CC Alegro Setúbal</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Coimbra</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Colombo</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Corroios</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Costa de Caparica</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Damaia</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">El Corte Inglés Gaia</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">El Corte Inglés Lisboa</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Estação Cais do Sodré</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Forum Algarve</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Freeport Lisboa Fashion Outlet</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Funchal S. Francisco</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Funchal Sé</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Fátima</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Gaia Avenida</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Gare do Oriente</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Lagos</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Leiria Shopping</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Lisboa Portas de Sto Antão</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Lisboa Praça da Figueira</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Loulé</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Matosinhos</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Mem Martins</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Nazaré</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Odivelas</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Odivelas Strada Shopping</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Oeiras Parque</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Olhão</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Oura</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Oura II</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Parede</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Pingo Doce Belavista</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Pingo Doce Barreiro</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Pingo Doce Penafiel</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Pingo Doce Santa Maria da Feira</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Pingo Doce Póvoa de Varzim</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Portimão</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Porto</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Praia da Rocha</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Praça do Chile</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Quarteira Mar</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Queluz</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Santarém W Shopping</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Setúbal</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Torres Vedras</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">UBBO</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Vasco da Gama</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Vila Franca de Xira</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Vila do Conde Porto Fashion Outlet</span><span class="branch-tag">CENTRO COMERCIAL</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Vilamoura</span><span class="branch-tag">RUA</span></div><div class="branch-item "><span class="branch-dot"></span><span class="branch-name">Viseu</span><span class="branch-tag">RUA</span></div></div>
-</div></section>
+<section class="cta-band">
+  <div class="container">
+    <h2>A qualquer hora.<br><span class="accent">Em qualquer cidade.</span></h2>
+    <div class="ctas"><a href="reserva.html" class="btn btn-primary btn-lg">Reservar Moeda</a></div>
+  </div>
+</section>
 
-<section class="cta-band"><div class="container">
-  <h2>A qualquer hora.<br><span class="accent">Em qualquer cidade.</span></h2>
-  <div class="ctas"><a href="reserva.html" class="btn btn-primary btn-lg">Reservar Moeda</a></div>
-</div></section>
-<div id="site-footer"></div><script src="site.js"></script><script>initNav('balcoes');</script></body></html>
+<div id="site-footer"></div>
+<script src="site.js"></script>
+<script>initNav('balcoes');</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const BALCOES = [
+  { nome: 'Aeroporto de Lisboa', tipo: 'AEROPORTO', lat: 38.7742, lng: -9.1342 },
+  { nome: 'Aeroporto Porto', tipo: 'AEROPORTO', lat: 41.2359, lng: -8.6781 },
+  { nome: 'Aeroporto de Faro', tipo: 'AEROPORTO', lat: 37.0144, lng: -7.9659 },
+  { nome: 'Aeroporto Funchal', tipo: 'AEROPORTO', lat: 32.6989, lng: -16.7742 },
+  { nome: 'Aeroporto Ponta Delgada', tipo: 'AEROPORTO', lat: 37.7412, lng: -25.6978 },
+  { nome: 'Albufeira 5 Outubro', tipo: 'RUA', lat: 37.0897, lng: -8.2504 },
+  { nome: 'Albufeira Av. 25 de Abril', tipo: 'RUA', lat: 37.0890, lng: -8.2510 },
+  { nome: 'Albufeira Av. da Liberdade', tipo: 'RUA', lat: 37.0903, lng: -8.2498 },
+  { nome: 'Albufeira II', tipo: 'RUA', lat: 37.0885, lng: -8.2518 },
+  { nome: 'Albufeira Miguel Bombarda', tipo: 'RUA', lat: 37.0878, lng: -8.2488 },
+  { nome: 'Albufeira Terrace', tipo: 'RUA', lat: 37.0910, lng: -8.2490 },
+  { nome: 'Almada Fórum', tipo: 'CENTRO COMERCIAL', lat: 38.6812, lng: -9.1581 },
+  { nome: 'Almancil', tipo: 'RUA', lat: 37.0879, lng: -8.0164 },
+  { nome: 'Almirante Reis', tipo: 'RUA', lat: 38.7211, lng: -9.1358 },
+  { nome: 'Alvor', tipo: 'RUA', lat: 37.1248, lng: -8.5971 },
+  { nome: 'Amadora', tipo: 'RUA', lat: 38.7525, lng: -9.2281 },
+  { nome: 'Amadora II', tipo: 'RUA', lat: 38.7531, lng: -9.2275 },
+  { nome: 'Aveiro', tipo: 'RUA', lat: 40.6405, lng: -8.6538 },
+  { nome: 'Aveiro — Pingo Doce', tipo: 'CENTRO COMERCIAL', lat: 40.6412, lng: -8.6530 },
+  { nome: 'Braga', tipo: 'RUA', lat: 41.5503, lng: -8.4200 },
+  { nome: 'Braga II', tipo: 'RUA', lat: 41.5510, lng: -8.4190 },
+  { nome: 'Braga Parque', tipo: 'CENTRO COMERCIAL', lat: 41.5495, lng: -8.4218 },
+  { nome: 'Cacém', tipo: 'RUA', lat: 38.7666, lng: -9.2982 },
+  { nome: 'Carvoeiro', tipo: 'RUA', lat: 37.1012, lng: -8.4671 },
+  { nome: 'Cascais', tipo: 'RUA', lat: 38.6970, lng: -9.4218 },
+  { nome: 'CC Alegro Alfragide', tipo: 'CENTRO COMERCIAL', lat: 38.7316, lng: -9.2121 },
+  { nome: 'CC Alegro Setúbal', tipo: 'CENTRO COMERCIAL', lat: 38.5244, lng: -8.8882 },
+  { nome: 'CC Alegro Sintra', tipo: 'CENTRO COMERCIAL', lat: 38.7978, lng: -9.3736 },
+  { nome: 'Coimbra', tipo: 'RUA', lat: 40.2033, lng: -8.4103 },
+  { nome: 'Colombo', tipo: 'CENTRO COMERCIAL', lat: 38.7519, lng: -9.1761 },
+  { nome: 'Corroios', tipo: 'RUA', lat: 38.6326, lng: -9.1557 },
+  { nome: 'Costa de Caparica', tipo: 'RUA', lat: 38.6421, lng: -9.2381 },
+  { nome: 'Damaia', tipo: 'RUA', lat: 38.7403, lng: -9.2161 },
+  { nome: 'El Corte Inglés Gaia', tipo: 'CENTRO COMERCIAL', lat: 41.1302, lng: -8.6165 },
+  { nome: 'El Corte Inglés Lisboa', tipo: 'CENTRO COMERCIAL', lat: 38.7251, lng: -9.1490 },
+  { nome: 'Estação Cais do Sodré', tipo: 'RUA', lat: 38.7065, lng: -9.1455 },
+  { nome: 'Fátima', tipo: 'RUA', lat: 39.6256, lng: -8.6612 },
+  { nome: 'Forum Algarve', tipo: 'CENTRO COMERCIAL', lat: 37.0948, lng: -8.2284 },
+  { nome: 'Freeport Lisboa Fashion Outlet', tipo: 'CENTRO COMERCIAL', lat: 38.8244, lng: -9.0451 },
+  { nome: 'Funchal S. Francisco', tipo: 'RUA', lat: 32.6494, lng: -16.9089 },
+  { nome: 'Funchal Sé', tipo: 'RUA', lat: 32.6500, lng: -16.9082 },
+  { nome: 'Gaia Avenida', tipo: 'RUA', lat: 41.1302, lng: -8.6170 },
+  { nome: 'Gare do Oriente', tipo: 'RUA', lat: 38.7671, lng: -9.0995 },
+  { nome: 'Lagos', tipo: 'RUA', lat: 37.1021, lng: -8.6742 },
+  { nome: 'Leiria Shopping', tipo: 'CENTRO COMERCIAL', lat: 39.7436, lng: -8.8071 },
+  { nome: 'Lisboa Portas de Sto Antão', tipo: 'RUA', lat: 38.7152, lng: -9.1421 },
+  { nome: 'Lisboa Praça da Figueira', tipo: 'RUA', lat: 38.7140, lng: -9.1382 },
+  { nome: 'Loulé', tipo: 'RUA', lat: 37.1441, lng: -8.0243 },
+  { nome: 'Matosinhos', tipo: 'RUA', lat: 41.1839, lng: -8.6960 },
+  { nome: 'Mem Martins', tipo: 'RUA', lat: 38.8003, lng: -9.3322 },
+  { nome: 'Nazaré', tipo: 'RUA', lat: 39.6011, lng: -9.0705 },
+  { nome: 'Odivelas', tipo: 'RUA', lat: 38.7797, lng: -9.1832 },
+  { nome: 'Odivelas Strada Shopping', tipo: 'CENTRO COMERCIAL', lat: 38.7803, lng: -9.1841 },
+  { nome: 'Oeiras Parque', tipo: 'CENTRO COMERCIAL', lat: 38.6942, lng: -9.2997 },
+  { nome: 'Olhão', tipo: 'RUA', lat: 37.0276, lng: -7.8411 },
+  { nome: 'Oura', tipo: 'RUA', lat: 37.0996, lng: -8.2265 },
+  { nome: 'Oura II', tipo: 'RUA', lat: 37.1002, lng: -8.2258 },
+  { nome: 'Parede', tipo: 'RUA', lat: 38.6900, lng: -9.3561 },
+  { nome: 'Pingo Doce Barreiro', tipo: 'CENTRO COMERCIAL', lat: 38.6600, lng: -9.0715 },
+  { nome: 'Pingo Doce Belavista', tipo: 'CENTRO COMERCIAL', lat: 38.7420, lng: -9.1721 },
+  { nome: 'Pingo Doce Penafiel', tipo: 'CENTRO COMERCIAL', lat: 41.2049, lng: -8.2841 },
+  { nome: 'Pingo Doce Póvoa de Varzim', tipo: 'CENTRO COMERCIAL', lat: 41.3801, lng: -8.7597 },
+  { nome: 'Pingo Doce Santa Maria da Feira', tipo: 'CENTRO COMERCIAL', lat: 40.9263, lng: -8.5438 },
+  { nome: 'Portimão', tipo: 'RUA', lat: 37.1358, lng: -8.5378 },
+  { nome: 'Porto', tipo: 'RUA', lat: 41.1496, lng: -8.6109 },
+  { nome: 'Praia da Rocha', tipo: 'RUA', lat: 37.1167, lng: -8.5219 },
+  { nome: 'Praça do Chile', tipo: 'RUA', lat: 38.7247, lng: -9.1367 },
+  { nome: 'Quarteira Mar', tipo: 'RUA', lat: 37.0696, lng: -8.1001 },
+  { nome: 'Queluz', tipo: 'RUA', lat: 38.7534, lng: -9.2572 },
+  { nome: 'Santarém W Shopping', tipo: 'CENTRO COMERCIAL', lat: 39.2283, lng: -8.6953 },
+  { nome: 'Setúbal', tipo: 'RUA', lat: 38.5244, lng: -8.8890 },
+  { nome: 'Torres Vedras', tipo: 'RUA', lat: 39.0917, lng: -9.2586 },
+  { nome: 'UBBO', tipo: 'CENTRO COMERCIAL', lat: 38.7320, lng: -9.2118 },
+  { nome: 'Vasco da Gama', tipo: 'CENTRO COMERCIAL', lat: 38.7671, lng: -9.0985 },
+  { nome: 'Vila do Conde Porto Fashion Outlet', tipo: 'CENTRO COMERCIAL', lat: 41.3526, lng: -8.7450 },
+  { nome: 'Vila Franca de Xira', tipo: 'RUA', lat: 38.9550, lng: -8.9851 },
+  { nome: 'Vilamoura', tipo: 'RUA', lat: 37.0703, lng: -8.1226 },
+  { nome: 'Viseu', tipo: 'RUA', lat: 40.6566, lng: -7.9122 },
+];
+
+// Inicializar mapa
+const map = L.map('mapa', { zoomControl: true }).setView([39.5, -8.0], 6);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+  maxZoom: 18,
+}).addTo(map);
+
+// Ícone personalizado
+function criarIcone(aeroporto) {
+  return L.divIcon({
+    html: `<div style="width:${aeroporto ? 14 : 10}px;height:${aeroporto ? 14 : 10}px;border-radius:50%;background:${aeroporto ? '#FFD100' : '#c9a000'};border:2px solid ${aeroporto ? '#fff' : 'rgba(255,209,0,0.5)'};box-shadow:0 0 ${aeroporto ? '8px' : '4px'} rgba(255,209,0,0.6);"></div>`,
+    className: '',
+    iconSize: [aeroporto ? 14 : 10, aeroporto ? 14 : 10],
+    iconAnchor: [aeroporto ? 7 : 5, aeroporto ? 7 : 5],
+  });
+}
+
+// Criar marcadores
+const marcadores = BALCOES.map((b, i) => {
+  const aeroporto = b.tipo === 'AEROPORTO';
+  const marker = L.marker([b.lat, b.lng], { icon: criarIcone(aeroporto) })
+    .bindPopup(`<div class="balcao-popup"><strong>${b.nome}</strong><span>${b.tipo}</span><br><a href="https://www.google.com/maps/search/${encodeURIComponent('Unicâmbio ' + b.nome)}" target="_blank">Ver no Google Maps ↗</a></div>`)
+    .addTo(map);
+  return { ...b, marker, index: i };
+});
+
+// Estado
+let centroAtual = null;
+let raioAtual = 10;
+let circulo = null;
+let pinCentro = null;
+
+// Botões de raio
+document.querySelectorAll('.btn-raio').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.btn-raio').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    raioAtual = parseInt(btn.dataset.km);
+    if (centroAtual) aplicarFiltro(centroAtual.lat, centroAtual.lng);
+  });
+});
+
+function distanciaKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function aplicarFiltro(lat, lng) {
+  centroAtual = { lat, lng };
+
+  if (circulo) map.removeLayer(circulo);
+  circulo = L.circle([lat, lng], {
+    radius: raioAtual * 1000,
+    color: 'rgba(255,209,0,0.6)',
+    fillColor: 'rgba(255,209,0,0.06)',
+    fillOpacity: 1,
+    weight: 1.5,
+  }).addTo(map);
+
+  const resultados = marcadores
+    .map(b => ({ ...b, dist: distanciaKm(lat, lng, b.lat, b.lng) }))
+    .filter(b => b.dist <= raioAtual)
+    .sort((a, b) => a.dist - b.dist);
+
+  renderLista(resultados);
+
+  const grupo = L.featureGroup([circulo, ...resultados.map(b => b.marker)]);
+  map.fitBounds(grupo.getBounds().pad(0.1));
+  document.getElementById('contador-balcoes').textContent = resultados.length;
+}
+
+function renderLista(lista) {
+  const el = document.getElementById('lista-balcoes');
+  if (lista.length === 0) {
+    el.innerHTML = '<div id="msg-balcoes">Nenhum balcão neste raio. Tente aumentar a distância.</div>';
+    return;
+  }
+  el.innerHTML = lista.map((b, i) => `
+    <div class="branch-result${i === 0 ? ' destacado' : ''}" data-idx="${b.index}">
+      <div class="branch-result-dot${b.tipo === 'AEROPORTO' ? ' aeroporto' : ''}"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="branch-result-name">${b.nome}</div>
+        <div class="branch-result-tag">${b.tipo}</div>
+      </div>
+      ${b.dist !== undefined ? `<div class="branch-result-dist">${b.dist.toFixed(1)} km</div>` : ''}
+    </div>
+  `).join('');
+
+  el.querySelectorAll('.branch-result').forEach(item => {
+    item.addEventListener('click', () => {
+      const idx = parseInt(item.dataset.idx);
+      const b = marcadores[idx];
+      map.setView([b.lat, b.lng], 15);
+      b.marker.openPopup();
+      el.querySelectorAll('.branch-result').forEach(i => i.classList.remove('destacado'));
+      item.classList.add('destacado');
+    });
+  });
+}
+
+function mostrarTodos() {
+  const el = document.getElementById('lista-balcoes');
+  el.innerHTML = marcadores.map((b, i) => `
+    <div class="branch-result" data-idx="${i}">
+      <div class="branch-result-dot${b.tipo === 'AEROPORTO' ? ' aeroporto' : ''}"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="branch-result-name">${b.nome}</div>
+        <div class="branch-result-tag">${b.tipo}</div>
+      </div>
+    </div>
+  `).join('');
+  el.querySelectorAll('.branch-result').forEach(item => {
+    item.addEventListener('click', () => {
+      const idx = parseInt(item.dataset.idx);
+      const b = marcadores[idx];
+      map.setView([b.lat, b.lng], 14);
+      b.marker.openPopup();
+      el.querySelectorAll('.branch-result').forEach(i => i.classList.remove('destacado'));
+      item.classList.add('destacado');
+    });
+  });
+  document.getElementById('contador-balcoes').textContent = BALCOES.length;
+}
+
+// Geolocalização
+document.getElementById('btn-geo').addEventListener('click', () => {
+  const btn = document.getElementById('btn-geo');
+  btn.textContent = 'A obter localização…';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Localização activa`;
+      btn.disabled = false;
+      if (pinCentro) map.removeLayer(pinCentro);
+      pinCentro = L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
+        radius: 7, color: '#fff', fillColor: '#4a9eff', fillOpacity: 1, weight: 2,
+      }).addTo(map).bindPopup('A sua localização').openPopup();
+      aplicarFiltro(pos.coords.latitude, pos.coords.longitude);
+    },
+    () => {
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Usar a minha localização`;
+      btn.disabled = false;
+      alert('Não foi possível obter a sua localização. Verifique as permissões do browser.');
+    }
+  );
+});
+
+// Pesquisa por morada (Nominatim)
+async function pesquisarMorada() {
+  const morada = document.getElementById('input-morada').value.trim();
+  if (!morada) return;
+  const btn = document.getElementById('btn-pesquisar');
+  btn.textContent = '…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(morada + ', Portugal')}&format=json&limit=1`);
+    const data = await res.json();
+    if (data.length > 0) {
+      const lat = parseFloat(data[0].lat);
+      const lng = parseFloat(data[0].lon);
+      if (pinCentro) map.removeLayer(pinCentro);
+      pinCentro = L.circleMarker([lat, lng], {
+        radius: 7, color: '#fff', fillColor: '#4a9eff', fillOpacity: 1, weight: 2,
+      }).addTo(map).bindPopup(`📍 ${data[0].display_name.split(',')[0]}`).openPopup();
+      aplicarFiltro(lat, lng);
+    } else {
+      alert('Morada não encontrada. Tente ser mais específico.');
+    }
+  } catch {
+    alert('Erro ao pesquisar. Tente novamente.');
+  }
+  btn.textContent = 'Pesquisar';
+  btn.disabled = false;
+}
+
+document.getElementById('btn-pesquisar').addEventListener('click', pesquisarMorada);
+document.getElementById('input-morada').addEventListener('keydown', e => { if (e.key === 'Enter') pesquisarMorada(); });
+
+// Mostrar todos inicialmente
+mostrarTodos();
+</script>
+</body>
+</html>
