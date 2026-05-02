@@ -39,7 +39,12 @@ const VALID_CURRENCIES = ['USD','GBP','BRL','JPY','CHF','AED','CNY','CAD','AUD',
 
 module.exports = async (req, res) => {
   // CORS
-  res.setHeader('Access-Control-Allow-Origin', 'https://unicambio.pt');
+  const origin = req.headers.origin || '';
+  const allowed = ['https://unicambio.pt', 'https://www.unicambio.pt'];
+  if (allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
