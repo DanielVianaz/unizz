@@ -14,3 +14,16 @@ Thumbs.db
 
 # Claude
 .claude/
+
+# Env files — never commit secrets
+.env
+.env.local
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Backend folder
+backend/

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 230" width="430" height="230">
+<defs>
+
+<!-- ── GRADIENTS ── -->
+<linearGradient id="gf" x1="0%" y1="0%" x2="5%" y2="100%">
+  <stop offset="0%"   stop-color="#FFFCE0"/>
+  <stop offset="7%"   stop-color="#FFE866"/>
+  <stop offset="20%"  stop-color="#FFD500"/>
+  <stop offset="40%"  stop-color="#EEC000"/>
+  <stop offset="58%"  stop-color="#D4A000"/>
+  <stop offset="76%"  stop-color="#B07800"/>
+  <stop offset="90%"  stop-color="#8A6000"/>
+  <stop offset="100%" stop-color="#A07800"/>
+</linearGradient>
+<linearGradient id="gt" x1="100%" y1="0%" x2="0%" y2="100%">
+  <stop offset="0%"   stop-color="#FFFDEC"/>
+  <stop offset="12%"  stop-color="#FFF8B0"/>
+  <stop offset="28%"  stop-color="#FFE840"/>
+  <stop offset="55%"  stop-color="#E8C400"/>
+  <stop offset="78%"  stop-color="#C8A000"/>
+  <stop offset="100%" stop-color="#A88000"/>
+</linearGradient>
+<linearGradient id="gr" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%"   stop-color="#9A7400"/>
+  <stop offset="38%"  stop-color="#A88000"/>
+  <stop offset="65%"  stop-color="#C09800"/>
+  <stop offset="100%" stop-color="#8A6400"/>
+</linearGradient>
+<linearGradient id="gbot" x1="0%" y1="0%" x2="100%" y2="0%">
+  <stop offset="0%"   stop-color="#2E1E00"/>
+  <stop offset="100%" stop-color="#4A3000"/>
+</linearGradient>
+<linearGradient id="streak-h" x1="0%" y1="0%" x2="100%" y2="0%">
+  <stop offset="0%"   stop-color="rgba(255,255,255,0)"/>
+  <stop offset="22%"  stop-color="rgba(255,255,255,.48)"/>
+  <stop offset="42%"  stop-color="rgba(255,255,255,.65)"/>
+  <stop offset="62%"  stop-color="rgba(255,255,255,.22)"/>
+  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+</linearGradient>
+<linearGradient id="streak-t" x1="100%" y1="0%" x2="0%" y2="100%">
+  <stop offset="0%"   stop-color="rgba(255,255,255,.78)"/>
+  <stop offset="35%"  stop-color="rgba(255,255,255,.38)"/>
+  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+</linearGradient>
+<radialGradient id="cshine" cx="42%" cy="38%" r="52%">
+  <stop offset="0%"   stop-color="rgba(255,255,220,.24)"/>
+  <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+</radialGradient>
+<radialGradient id="aglow" cx="50%" cy="50%" r="50%">
+  <stop offset="0%"   stop-color="rgba(255,192,0,.28)"/>
+  <stop offset="100%" stop-color="rgba(255,192,0,0)"/>
+</radialGradient>
+
+<!-- ── FILTERS ── -->
+
+<!-- Drop shadow -->
+<filter id="fsh" x="-18%" y="-10%" width="136%" height="185%">
+  <feDropShadow dx="0" dy="26" stdDeviation="20" flood-color="rgba(0,0,0,.78)"/>
+</filter>
+
+<!-- Metallic specular — front face (warm point light upper-left) -->
+<filter id="fm-front" x="-2%" y="-2%" width="104%" height="104%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.055 0.018" numOctaves="4" seed="7" result="noise"/>
+  <feColorMatrix type="luminanceToAlpha" in="noise" result="bump"/>
+  <feSpecularLighting in="bump" surfaceScale="5" specularConstant="1.7"
+      specularExponent="24" lighting-color="rgba(255,248,200,.8)" result="spec">
+    <fePointLight x="90" y="-110" z="380"/>
+  </feSpecularLighting>
+  <feComposite in="spec" in2="SourceGraphic" operator="in" result="sc"/>
+  <feBlend in="SourceGraphic" in2="sc" mode="screen"/>
+</filter>
+
+<!-- Metallic specular — top face (overhead point light) -->
+<filter id="fm-top" x="-2%" y="-2%" width="104%" height="104%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.055 0.018" numOctaves="4" seed="3" result="noise"/>
+  <feColorMatrix type="luminanceToAlpha" in="noise" result="bump"/>
+  <feSpecularLighting in="bump" surfaceScale="4" specularConstant="2.2"
+      specularExponent="32" lighting-color="rgba(255,255,230,.92)" result="spec">
+    <fePointLight x="180" y="-160" z="320"/>
+  </feSpecularLighting>
+  <feComposite in="spec" in2="SourceGraphic" operator="in" result="sc"/>
+  <feBlend in="SourceGraphic" in2="sc" mode="screen"/>
+</filter>
+
+<!-- Ambient glow blur -->
+<filter id="fglow" x="-50%" y="-50%" width="200%" height="200%">
+  <feGaussianBlur stdDeviation="16"/>
+</filter>
+
+<!-- Clip paths -->
+<clipPath id="ff-clip"><polygon points="55,88 305,88 325,168 35,168"/></clipPath>
+<clipPath id="ft-clip"><polygon points="55,88 305,88 360,42 110,42"/></clipPath>
+
+</defs>
+
+<!-- Ambient glow behind bar -->
+<ellipse cx="200" cy="148" rx="200" ry="72" fill="url(#aglow)" filter="url(#fglow)"/>
+
+<!-- ══ BAR BODY ══ -->
+<g filter="url(#fsh)">
+
+  <!-- Bottom face (dark underside) -->
+  <polygon points="35,168 325,168 380,122 90,122" fill="url(#gbot)"/>
+
+  <!-- Right side face -->
+  <polygon points="305,88 325,168 380,122 360,42" fill="url(#gr)"/>
+
+  <!-- Top face — receives most direct light -->
+  <polygon points="55,88 305,88 360,42 110,42" fill="url(#gt)"/>
+  <polygon points="55,88 305,88 360,42 110,42" fill="url(#gt)" filter="url(#fm-top)" opacity=".88"/>
+  <polygon points="110,42 360,42 305,88 55,88"  fill="url(#streak-t)" clip-path="url(#ft-clip)" opacity=".52"/>
+
+  <!-- Front face — main visible face -->
+  <polygon points="55,88 305,88 325,168 35,168" fill="url(#gf)"/>
+  <polygon points="55,88 305,88 325,168 35,168" fill="url(#gf)" filter="url(#fm-front)" opacity=".82"/>
+  <polygon points="55,88 305,88 325,168 35,168" fill="url(#cshine)" clip-path="url(#ff-clip)"/>
+  <polygon points="55,88 170,88 182,168 35,168" fill="url(#streak-h)" clip-path="url(#ff-clip)" opacity=".44"/>
+
+  <!-- Edge highlights (the sharpest, brightest lines) -->
+  <line x1="55"  y1="88"  x2="305" y2="88"  stroke="rgba(255,255,255,.68)" stroke-width="1.8"/>
+  <line x1="55"  y1="88"  x2="110" y2="42"  stroke="rgba(255,255,255,.58)" stroke-width="1.5"/>
+  <line x1="305" y1="88"  x2="360" y2="42"  stroke="rgba(255,255,255,.28)" stroke-width="1.2"/>
+  <line x1="110" y1="42"  x2="360" y2="42"  stroke="rgba(255,255,255,.52)" stroke-width="1.5"/>
+  <line x1="35"  y1="168" x2="55"  y2="88"  stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+  <line x1="325" y1="168" x2="305" y2="88"  stroke="rgba(255,255,255,.12)" stroke-width=".8"/>
+
+</g>
+
+<!-- ══ ENGRAVING ══ -->
+<!-- Outer engraved border -->
+<polygon points="72,100 288,100 306,156 54,156"
+         fill="none" stroke="rgba(0,0,0,.2)" stroke-width="1.5"/>
+<polygon points="76,103 284,103 302,153 58,153"
+         fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".8"/>
+
+<!-- Assay stamp box (top-left of front face) -->
+<rect x="69" y="108" width="42" height="24" rx="2"
+      fill="rgba(0,0,0,.09)" stroke="rgba(0,0,0,.18)" stroke-width=".8"/>
+<text x="90" y="118" text-anchor="middle"
+      font-family="Arial,Helvetica,sans-serif" font-size="5.5" font-weight="700"
+      letter-spacing="1.2" fill="rgba(0,0,0,.3)">ASSAY</text>
+<text x="90" y="127" text-anchor="middle"
+      font-family="Arial,Helvetica,sans-serif" font-size="5.5" font-weight="700"
+      letter-spacing="1.2" fill="rgba(0,0,0,.3)">OFFICE</text>
+
+<!-- Serial number (small, realistic detail) -->
+<text x="285" y="111" text-anchor="end"
+      font-family="Arial,Helvetica,sans-serif" font-size="5" font-weight="400"
+      letter-spacing=".8" fill="rgba(0,0,0,.22)">UC · 2024 · 000847</text>
+
+<!-- UNICÂMBIO -->
+<text x="190" y="128" text-anchor="middle"
+      font-family="Arial Black,Arial,sans-serif" font-size="14" font-weight="900"
+      letter-spacing="5" fill="rgba(0,0,0,.4)">UNICÂMBIO</text>
+
+<!-- 999,9 Fine Gold -->
+<text x="190" y="143" text-anchor="middle"
+      font-family="Arial,Helvetica,sans-serif" font-size="9" font-weight="700"
+      letter-spacing="3.2" fill="rgba(0,0,0,.28)">999,9 · FINE GOLD</text>
+
+<!-- 100g weight -->
+<text x="190" y="158" text-anchor="middle"
+      font-family="Arial Black,Arial,sans-serif" font-size="14" font-weight="900"
+      letter-spacing="2.5" fill="rgba(0,0,0,.36)">100 g</text>
+
+<!-- Hallmark punch marks -->
+<circle cx="74"  cy="128" r="4.2" fill="none" stroke="rgba(0,0,0,.22)" stroke-width="1"/>
+<circle cx="74"  cy="128" r="2"   fill="rgba(0,0,0,.2)"/>
+<circle cx="298" cy="128" r="4.2" fill="none" stroke="rgba(0,0,0,.22)" stroke-width="1"/>
+<circle cx="298" cy="128" r="2"   fill="rgba(0,0,0,.2)"/>
+
+<!-- Top face engraving -->
+<text text-anchor="middle"
+      font-family="Arial,Helvetica,sans-serif" font-size="7" font-weight="700"
+      letter-spacing="3.5" fill="rgba(0,0,0,.28)"
+      transform="translate(232,68) rotate(-23)">OURO · UNICÂMBIO · 999,9</text>
+
+<!-- Floor reflection glow -->
+<ellipse cx="185" cy="176" rx="172" ry="13"
+         fill="rgba(255,178,0,.2)" filter="url(#fglow)" opacity=".75"/>
+
+</svg>

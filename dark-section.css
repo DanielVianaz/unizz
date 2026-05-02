@@ -1,0 +1,159 @@
+/* ============================================================
+   UNICÂMBIO — Dark Gold Section overrides
+   ============================================================ */
+
+.section-dark {
+  background: linear-gradient(160deg, #0c0c0c 0%, #1a1200 50%, #0c0c0c 100%) !important;
+  border-top: none !important;
+  position: relative;
+  overflow: hidden;
+}
+.section-dark::before {
+  content: ""; position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,209,0,.09) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+.section-dark::after {
+  content: ""; position: absolute; bottom: -150px; left: -150px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,209,0,.05) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+.section-dark > * { position: relative; z-index: 1; }
+
+/* Text */
+.section-dark .eyebrow { color: rgba(255,209,0,.75) !important; }
+.section-dark .eyebrow::before { background: #FFD100 !important; }
+.section-dark h2,
+.section-dark h3,
+.section-dark h4 { color: #fff !important; }
+.section-dark p,
+.section-dark .lede { color: rgba(255,255,255,.5) !important; }
+.section-dark strong { color: #fff !important; }
+.section-dark .section-head h2 { color: #fff !important; }
+
+/* Value props */
+.section-dark .vp-grid { border-color: rgba(255,255,255,.08) !important; }
+.section-dark .vp { border-color: rgba(255,255,255,.08) !important; }
+.section-dark .vp-num { color: #FFD100 !important; }
+.section-dark .vp p { color: rgba(255,255,255,.45) !important; }
+.section-dark .vp h3 { color: #fff !important; }
+
+/* Cards */
+.section-dark .card {
+  background: rgba(255,255,255,.03) !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+.section-dark .card:hover { background: rgba(255,255,255,.07) !important; }
+.section-dark .card h3 { color: #fff !important; }
+.section-dark .card p { color: rgba(255,255,255,.45) !important; }
+.section-dark .card-icon {
+  background: rgba(255,209,0,.12) !important;
+  border-color: rgba(255,209,0,.25) !important;
+  color: #FFD100 !important;
+}
+.section-dark .card .arrow { color: #FFD100 !important; }
+
+/* Pills */
+.section-dark .pill {
+  background: rgba(255,209,0,.12) !important;
+  border-color: rgba(255,209,0,.25) !important;
+  color: #FFD100 !important;
+}
+
+/* Lists */
+.section-dark .dash-list li { color: rgba(255,255,255,.5) !important; }
+.section-dark .dash-list li::before { background: #FFD100 !important; }
+
+/* Block */
+.section-dark .block {
+  background: rgba(255,255,255,.04) !important;
+  border-color: rgba(255,255,255,.1) !important;
+}
+.section-dark .block h3 { color: #fff !important; }
+.section-dark .block p { color: rgba(255,255,255,.45) !important; }
+
+/* Inline border styles */
+.section-dark [style*="border"] { border-color: rgba(255,255,255,.08) !important; }
+
+/* Stats */
+.section-dark .stat { border-color: rgba(255,255,255,.08) !important; }
+.section-dark .stat-value { color: #fff !important; }
+.section-dark .stat-label { color: rgba(255,255,255,.35) !important; }
+.section-dark .unit { color: #FFD100 !important; }
+
+/* Timeline */
+.section-dark .tl-cell { border-color: rgba(255,255,255,.08) !important; }
+.section-dark .tl-year { color: #FFD100 !important; }
+.section-dark .tl-body { color: rgba(255,255,255,.45) !important; }
+
+/* Branch list */
+.section-dark .branches-grid { border-color: rgba(255,255,255,.08) !important; }
+.section-dark .branch-item {
+  border-color: rgba(255,255,255,.08) !important;
+  color: rgba(255,255,255,.75) !important;
+}
+.section-dark .branch-item:hover { background: rgba(255,209,0,.06) !important; }
+.section-dark .branch-name { color: rgba(255,255,255,.75) !important; }
+.section-dark .branch-tag { color: rgba(255,255,255,.25) !important; }
+.section-dark .branch-dot { background: rgba(255,255,255,.2) !important; }
+.section-dark .branch-item.featured .branch-dot { background: #FFD100 !important; }
+
+/* Currency grid */
+.section-dark .currency-grid { border-color: rgba(255,255,255,.08) !important; }
+.section-dark .currency-cell {
+  border-color: rgba(255,255,255,.08) !important;
+}
+.section-dark .currency-cell:hover { background: rgba(255,209,0,.06) !important; }
+.section-dark .code { color: #fff !important; }
+.section-dark .name { color: rgba(255,255,255,.35) !important; }
+
+/* Blog cards */
+.section-dark .post-card {
+  background: rgba(255,255,255,.04) !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+.section-dark .post-card:hover { border-color: rgba(255,209,0,.3) !important; }
+.section-dark .post-thumb {
+  background: rgba(255,255,255,.03) !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+.section-dark .post-title { color: #fff !important; }
+.section-dark .post-excerpt { color: rgba(255,255,255,.45) !important; }
+.section-dark .post-date { color: rgba(255,255,255,.3) !important; }
+.section-dark .post-read { color: #FFD100 !important; }
+
+/* Buttons inside dark sections */
+.section-dark .btn-ghost {
+  border-color: rgba(255,255,255,.18) !important;
+  color: rgba(255,255,255,.75) !important;
+  background: transparent !important;
+}
+.section-dark .btn-ghost:hover {
+  background: rgba(255,255,255,.07) !important;
+  border-color: rgba(255,255,255,.4) !important;
+}
+
+/* Minimap */
+.section-dark .minimap {
+  background: radial-gradient(ellipse at 30% 40%, rgba(255,209,0,.1), transparent 60%), #111 !important;
+  border-color: rgba(255,255,255,.1) !important;
+}
+
+/* Forms */
+.section-dark .form-field label { color: rgba(255,255,255,.5) !important; }
+.section-dark .form-field input,
+.section-dark .form-field select,
+.section-dark .form-field textarea {
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.12) !important;
+  color: #fff !important;
+}
+.section-dark .form-field input::placeholder { color: rgba(255,255,255,.3) !important; }
+.section-dark .form-field input:focus,
+.section-dark .form-field select:focus,
+.section-dark .form-field textarea:focus {
+  border-color: #FFD100 !important;
+  background: rgba(255,209,0,.07) !important;
+}

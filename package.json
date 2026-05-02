@@ -1,0 +1,9 @@
+{
+  "name": "unicambio-site",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "express-rate-limit": "^7.1.5"
+  }
+}
