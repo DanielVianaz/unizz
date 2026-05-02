@@ -60,7 +60,8 @@ const VALID_TIPOS = [
 module.exports = async (req, res) => {
   const origin = req.headers.origin || '';
   const allowed = ['https://unicambio.pt', 'https://www.unicambio.pt'];
-  if (allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+  const isProjectPreview = /^https:\/\/unizz(-[a-z0-9]+-danielvianazs-projects)?\.vercel\.app$/.test(origin);
+  if (allowed.includes(origin) || isProjectPreview) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Vary', 'Origin');
