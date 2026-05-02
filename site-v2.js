@@ -1,4 +1,4 @@
-/* Unicâmbio — shared nav + footer injection + common interactions */
+﻿/* Unicâmbio — shared nav + footer injection + common interactions */
 
 const UNI_NAV = `
 <div class="topbar">
@@ -6,56 +6,56 @@ const UNI_NAV = `
     <span>Linha de Apoio: <a href="tel:800506066" class="phone">800 50 60 66</a> · das 9h às 19h</span>
     <div class="topbar-right">
       <span class="hide-sm">Fora de Portugal: <a href="tel:+351300509120" class="phone">(+351) 300 509 120</a></span>
-      <a href="contactos-v2.html" class="hide-sm">info@unicambio.pt</a>
-      <a href="denuncias-v2.html" class="hide-sm" style="color:var(--yellow);">Denúncias</a>
+      <a href="contactos.html" class="hide-sm">info@unicambio.pt</a>
+      <a href="denuncias.html" class="hide-sm" style="color:var(--yellow);">Denúncias</a>
     </div>
   </div>
 </div>
 <nav class="nav" id="nav">
   <div class="nav-i">
     <div class="nav-brand">
-      <a href="index-v2.html" class="logo" style="overflow:hidden;height:48px;width:182px;display:block;flex-shrink:0;"><img src="unicambio_logo_fullhd.png" alt="Unicâmbio" style="height:182px;width:auto;display:block;margin-top:-67px;"></a>
-      <a href="western-union-v2.html" class="wu-nav-logo"><img src="https://www.unicambio.pt/images/WesternUnion.png" alt="Western Union"></a>
+      <a href="index.html" class="logo" style="overflow:hidden;height:48px;width:182px;display:block;flex-shrink:0;"><img src="unicambio_logo_fullhd.png" alt="Unicâmbio" style="height:182px;width:auto;display:block;margin-top:-67px;"></a>
+      <a href="western-union.html" class="wu-nav-logo"><img src="https://www.unicambio.pt/images/WesternUnion.png" alt="Western Union"></a>
     </div>
     <div class="nav-links">
       <div class="nav-item">
-        <a href="cambios-v2.html">Serviços</a>
+        <a href="cambios.html">Serviços</a>
         <div class="nav-drop">
-          <a href="cambios-v2.html">Câmbio de Moeda</a>
-          <a href="reserva-v2.html#form">Reserva de Moeda</a>
-          <a href="western-union-v2.html">Western Union</a>
-          <a href="ouro-v2.html">Compra de Ouro</a>
-          <a href="credito-v2.html">Crédito Pessoal</a>
-          <a href="taxfree-v2.html">Tax Free</a>
-          <a href="sim-v2.html">Cartões SIM</a>
+          <a href="cambios.html">Câmbio de Moeda</a>
+          <a href="reserva.html#form">Reserva de Moeda</a>
+          <a href="western-union.html">Western Union</a>
+          <a href="ouro.html">Compra de Ouro</a>
+          <a href="credito.html">Crédito Pessoal</a>
+          <a href="taxfree.html">Tax Free</a>
+          <a href="sim.html">Cartões SIM</a>
           <a href="https://unimoney.pt" target="_blank">Wallet Unimoney ↗</a>
         </div>
       </div>
       <div class="nav-item">
-        <a href="western-union-v2.html">Western Union</a>
+        <a href="western-union.html">Western Union</a>
         <div class="nav-drop">
-          <a href="western-union-v2.html">Enviar Dinheiro</a>
-          <a href="western-union-v2.html#quickpay">Quick Pay WU</a>
+          <a href="western-union.html">Enviar Dinheiro</a>
+          <a href="western-union.html#quickpay">Quick Pay WU</a>
         </div>
       </div>
-      <a href="balcoes-v2.html">Balcões</a>
+      <a href="balcoes.html">Balcões</a>
       <div class="nav-item">
-        <a href="quem-somos-v2.html">Sobre Nós</a>
+        <a href="quem-somos.html">Sobre Nós</a>
         <div class="nav-drop">
-          <a href="quem-somos-v2.html">Quem Somos</a>
-          <a href="quem-somos-v2.html#compliance">Compliance</a>
-          <a href="quem-somos-v2.html#institucional">Informação Institucional</a>
-          <a href="quem-somos-v2.html#imprensa">Imprensa</a>
-          <a href="trabalhe-connosco-v2.html">Trabalhar na Unicâmbio</a>
-          <a href="contactos-v2.html">Contactos</a>
+          <a href="quem-somos.html">Quem Somos</a>
+          <a href="quem-somos.html#compliance">Compliance</a>
+          <a href="quem-somos.html#institucional">Informação Institucional</a>
+          <a href="quem-somos.html#imprensa">Imprensa</a>
+          <a href="trabalhe-connosco.html">Trabalhar na Unicâmbio</a>
+          <a href="contactos.html">Contactos</a>
         </div>
       </div>
-      <a href="blog-v2.html">Blog</a>
-      <a href="empresas-v2.html">Empresas</a>
+      <a href="blog.html">Blog</a>
+      <a href="empresas.html">Empresas</a>
     </div>
     <div class="nav-r">
-      <a href="balcoes-v2.html" class="btn-ghost">Ver Balcões</a>
-      <a href="reserva-v2.html#form" class="btn-dark">Reservar Moeda</a>
+      <a href="balcoes.html" class="btn-ghost">Ver Balcões</a>
+      <a href="reserva.html#form" class="btn-dark">Reservar Moeda</a>
       <button class="burger" id="burger" aria-label="Menu">
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 1h14M1 6h14M1 11h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
@@ -69,7 +69,7 @@ const UNI_FOOTER = `
   <div class="container">
     <div class="footer-top">
       <div>
-        <a href="index-v2.html" style="display:block;height:48px;overflow:hidden;width:182px;flex-shrink:0;">
+        <a href="index.html" style="display:block;height:48px;overflow:hidden;width:182px;flex-shrink:0;">
           <img src="unicambio_logo_fullhd.png" alt="Unicâmbio" style="height:182px;width:auto;display:block;margin-top:-67px;">
         </a>
         <p class="footer-tag">A sua casa de câmbios de confiança desde 1992.</p>
@@ -84,24 +84,24 @@ const UNI_FOOTER = `
       </div>
       <div class="footer-col">
         <h4>Serviços</h4>
-        <a href="cambios-v2.html">Câmbios</a>
-        <a href="reserva-v2.html">Reserva de Moeda</a>
-        <a href="western-union-v2.html">Western Union</a>
-        <a href="ouro-v2.html">Compra de Ouro</a>
-        <a href="credito-v2.html">Crédito Pessoal</a>
-        <a href="taxfree-v2.html">Tax Free</a>
-        <a href="sim-v2.html">Cartões SIM</a>
+        <a href="cambios.html">Câmbios</a>
+        <a href="reserva.html">Reserva de Moeda</a>
+        <a href="western-union.html">Western Union</a>
+        <a href="ouro.html">Compra de Ouro</a>
+        <a href="credito.html">Crédito Pessoal</a>
+        <a href="taxfree.html">Tax Free</a>
+        <a href="sim.html">Cartões SIM</a>
         <a href="https://unimoney.pt" target="_blank">Wallet Unimoney ↗</a>
       </div>
       <div class="footer-col">
         <h4>Empresa</h4>
-        <a href="quem-somos-v2.html">Quem Somos</a>
-        <a href="parcerias-v2.html">Parcerias</a>
-        <a href="empresas-v2.html">Empresas</a>
-        <a href="quem-somos-v2.html#imprensa">Imprensa</a>
-        <a href="trabalhe-connosco-v2.html">Trabalhar na Unicâmbio</a>
-        <a href="contactos-v2.html">Contactos</a>
-        <a href="blog-v2.html">Blog</a>
+        <a href="quem-somos.html">Quem Somos</a>
+        <a href="parcerias.html">Parcerias</a>
+        <a href="empresas.html">Empresas</a>
+        <a href="quem-somos.html#imprensa">Imprensa</a>
+        <a href="trabalhe-connosco.html">Trabalhar na Unicâmbio</a>
+        <a href="contactos.html">Contactos</a>
+        <a href="blog.html">Blog</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>

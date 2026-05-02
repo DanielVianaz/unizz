@@ -1,254 +1,223 @@
-<!doctype html>
-<html lang="pt">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+﻿<!doctype html>
+<html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Canal de Denúncias · Unicâmbio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-v2.css">
+<link rel="stylesheet" href="dark-section.css">
+<meta name="description" content="Canal de denúncias Unicâmbio — reporte práticas irregulares de forma confidencial e, se desejar, anónima. Conformidade com o RGPD.">
+<meta property="og:title" content="Canal de Denúncias · Unicâmbio">
+<meta property="og:description" content="Reporte situações irregulares de forma confidencial. Denúncia anónima disponível. Código de referência único gerado após submissão.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Unicâmbio">
 <style>
-  .toggle-section { overflow: hidden; max-height: 0; transition: max-height 0.35s ease, opacity 0.3s ease; opacity: 0; }
-  .toggle-section.visivel { max-height: 600px; opacity: 1; }
-  .radio-group { display: flex; gap: 12px; }
-  .radio-option { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid var(--line-strong); border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--fg-dim); transition: border-color 0.15s, color 0.15s, background 0.15s; }
-  .radio-option:has(input:checked) { border-color: var(--yellow); color: var(--fg); background: rgba(255,209,0,0.05); }
-  .radio-option input { accent-color: var(--yellow); }
-  .char-counter { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--fg-faint); text-align: right; margin-top: 6px; }
-  .char-counter.ok { color: var(--yellow); }
-  .field-erro { color: #f87171; font-size: 12px; margin-top: 4px; display: none; }
-  .sucesso-box { display: none; padding: 48px 40px; border: 1px solid rgba(255,209,0,0.3); border-radius: 20px; background: rgba(255,209,0,0.04); text-align: center; }
-  .sucesso-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,209,0,0.15); border: 1px solid rgba(255,209,0,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 24px; }
-  .codigo-ref { font-family: 'Geist Mono', monospace; font-size: 28px; font-weight: 600; color: var(--yellow); letter-spacing: 0.05em; margin: 16px 0; padding: 16px 24px; border: 1px dashed rgba(255,209,0,0.4); border-radius: 12px; display: inline-block; }
+.toggle-section{overflow:hidden;max-height:0;transition:max-height .35s ease,opacity .3s ease;opacity:0;}
+.toggle-section.visivel{max-height:600px;opacity:1;}
+.radio-group{display:flex;gap:12px;flex-wrap:wrap;}
+.radio-option{display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--line-strong);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg-dim);transition:border-color .15s,color .15s,background .15s;}
+.radio-option:has(input:checked){border-color:var(--yellow);color:var(--fg);background:rgba(255,209,0,0.06);}
+.radio-option input{accent-color:var(--yellow);}
+.char-counter{font-family:'Geist Mono',monospace;font-size:11px;color:var(--fg-faint);text-align:right;margin-top:6px;}
+.char-counter.ok{color:var(--yellow);}
+.field-erro{color:#e53e3e;font-size:12px;margin-top:4px;display:none;}
+.sucesso-box{display:none;padding:48px 40px;border:1px solid rgba(255,209,0,0.3);border-radius:20px;background:rgba(255,209,0,0.04);text-align:center;}
+.sucesso-icon{width:56px;height:56px;border-radius:50%;background:rgba(255,209,0,0.15);border:1px solid rgba(255,209,0,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:24px;}
+.codigo-ref{font-family:'Geist Mono',monospace;font-size:28px;font-weight:600;color:var(--yellow);letter-spacing:.05em;margin:16px 0;padding:16px 24px;border:1px dashed rgba(255,209,0,0.4);border-radius:12px;display:inline-block;}
+.nota-anonimo{margin-top:12px;padding:12px 16px;border-radius:8px;background:var(--bg-2);border:1px solid var(--line);font-size:13px;color:var(--fg-dim);}
+.erro-geral{display:none;color:#e53e3e;font-size:14px;padding:14px 16px;border-radius:8px;border:1px solid rgba(229,62,62,0.2);background:rgba(229,62,62,0.05);}
 </style>
-</head>
-<body>
-<div id="site-nav"></div>
+</head><body><div id="site-nav"></div>
 
-<section class="hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Início</a> · <span>Canal de Denúncias</span></div>
-    <div class="eyebrow" style="margin-top:16px;">Compliance</div>
-    <h1>Canal de<br><span class="accent">Denúncias.</span></h1>
-    <p class="hero-sub">Canal dedicado à denúncia de práticas irregulares ou indícios de infrações que violem regimes legais ou regulamentares aplicáveis à atividade da instituição.</p>
-  </div>
-</section>
+<section class="hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Início</a> · <span>Canal de Denúncias</span></div>
+  <div class="eyebrow" style="margin-top:16px;">Compliance</div>
+  <h1>Canal de<br><span class="accent">Denúncias.</span></h1>
+  <p class="hero-sub">Canal dedicado à denúncia de práticas irregulares ou indícios de infrações que violem regimes legais ou regulamentares aplicáveis à atividade da instituição.</p>
+</div></section>
 
-<!-- Cards informativos -->
-<section class="section section-pad" style="padding-bottom:0;">
-  <div class="container">
-    <div class="grid-3" style="margin-bottom:0;">
-      <div class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="3" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h6M8 11h6M8 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 3l14 16" stroke="none"/></svg></div>
-        <h3>Confidencial</h3>
-        <p>Todos os dados são tratados com total confidencialidade, em conformidade com o RGPD.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 8h2m-1-1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <h3>Pode ser anónimo</h3>
-        <p>Tem a opção de submeter a denúncia sem se identificar. O anonimato é garantido.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 3l8 4v5c0 4-3.5 7-8 8C6.5 19 3 16 3 12V7l8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-        <h3>Código de referência</h3>
-        <p>Receberá um código único para acompanhar o estado da sua denúncia.</p>
-      </div>
+<section class="section section-pad" style="padding-bottom:0;"><div class="container">
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="3" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h6M8 11h6M8 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h3>Confidencial</h3>
+      <p>Todos os dados são tratados com total confidencialidade, em conformidade com o RGPD.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 8h2m-1-1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h3>Pode ser anónimo</h3>
+      <p>Tem a opção de submeter a denúncia sem se identificar. O anonimato é garantido.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 3l8 4v5c0 4-3.5 7-8 8C6.5 19 3 16 3 12V7l8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <h3>Código de referência</h3>
+      <p>Receberá um código único para acompanhar o estado da sua denúncia.</p>
     </div>
   </div>
-</section>
+</div></section>
 
-<!-- Formulário -->
-<section class="section section-pad">
-  <div class="container">
-    <div style="max-width:760px;margin:0 auto;">
+<section class="section section-pad"><div class="container">
+  <div style="max-width:760px;margin:0 auto;">
 
-      <!-- Ecrã de sucesso -->
-      <div class="sucesso-box" id="sucesso-box">
-        <div class="sucesso-icon">✓</div>
-        <h2 style="font-size:clamp(24px,4vw,40px);letter-spacing:-0.03em;">Denúncia submetida<br>com sucesso</h2>
-        <p style="color:var(--fg-dim);margin-top:12px;font-size:15px;">Guarde este código. Permite-lhe acompanhar o estado da sua denúncia.</p>
-        <div class="codigo-ref" id="codigo-display"></div>
-        <p id="msg-identificado" style="display:none;color:var(--fg-dim);font-size:14px;margin-top:12px;">Receberá uma confirmação no email fornecido assim que o sistema de notificações estiver ativo.</p>
-        <p id="msg-anonimo" style="display:none;color:var(--fg-dim);font-size:14px;margin-top:12px;">A sua denúncia foi registada de forma completamente anónima.</p>
-        <a href="index.html" class="btn btn-ghost" style="margin-top:32px;">Voltar ao início</a>
-      </div>
+    <div class="sucesso-box" id="sucesso-box">
+      <div class="sucesso-icon">✓</div>
+      <h2 style="font-size:clamp(24px,4vw,40px);letter-spacing:-0.03em;">Denúncia submetida<br>com sucesso</h2>
+      <p style="color:var(--fg-dim);margin-top:12px;font-size:15px;">Guarde este código. Permite-lhe acompanhar o estado da sua denúncia.</p>
+      <div class="codigo-ref" id="codigo-display"></div>
+      <p id="msg-identificado" style="display:none;color:var(--fg-dim);font-size:14px;margin-top:12px;">Receberá uma confirmação no email fornecido assim que o sistema de notificações estiver ativo.</p>
+      <p id="msg-anonimo" style="display:none;color:var(--fg-dim);font-size:14px;margin-top:12px;">A sua denúncia foi registada de forma completamente anónima.</p>
+      <a href="index.html" class="btn btn-ghost" style="margin-top:32px;">Voltar ao início</a>
+    </div>
 
-      <!-- Formulário -->
-      <form id="form-denuncia" style="display:flex;flex-direction:column;gap:32px;">
+    <form id="form-denuncia" style="display:flex;flex-direction:column;gap:32px;">
 
-        <!-- Campo 1: Identificação -->
-        <div>
-          <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Deseja ser identificado no reporte?</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="identificado" value="nao" checked> Não (anónimo)
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="identificado" value="sim"> Sim
-            </label>
-          </div>
-          <div id="nota-anonimo" style="margin-top:12px;padding:12px 16px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--line);font-size:13px;color:var(--fg-dim);">
-            A sua denúncia será registada de forma completamente anónima. Guarde o código de referência que será gerado após a submissão.
-          </div>
-          <div class="toggle-section" id="campos-identificado">
-            <div class="form-grid" style="margin-top:16px;">
-              <div class="form-field">
-                <label>Nome completo</label>
-                <input type="text" id="d-nome" placeholder="O seu nome">
-                <div class="field-erro" id="erro-nome">Nome obrigatório quando identificado.</div>
-              </div>
-              <div class="form-field">
-                <label>Contacto telefónico <span style="color:var(--fg-faint)">(opcional)</span></label>
-                <input type="tel" id="d-telefone" placeholder="(+351) 912 345 678">
-              </div>
-              <div class="form-field full">
-                <label>Email</label>
-                <input type="email" id="d-email" placeholder="o.seu@email.pt">
-                <div class="field-erro" id="erro-email">Email obrigatório quando identificado.</div>
-              </div>
+      <!-- 1. Identificação -->
+      <div>
+        <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Deseja ser identificado no reporte?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="identificado" value="nao" checked> Não (anónimo)</label>
+          <label class="radio-option"><input type="radio" name="identificado" value="sim"> Sim</label>
+        </div>
+        <div class="nota-anonimo" id="nota-anonimo">A sua denúncia será registada de forma completamente anónima. Guarde o código de referência gerado após a submissão.</div>
+        <div class="toggle-section" id="campos-identificado">
+          <div class="form-grid" style="margin-top:16px;">
+            <div class="form-field">
+              <label>Nome completo</label>
+              <input type="text" id="d-nome" placeholder="O seu nome">
+              <div class="field-erro" id="erro-nome">Nome obrigatório quando identificado.</div>
+            </div>
+            <div class="form-field">
+              <label>Contacto telefónico <span style="color:var(--fg-faint)">(opcional)</span></label>
+              <input type="tel" id="d-telefone" placeholder="(+351) 912 345 678">
+            </div>
+            <div class="form-field full">
+              <label>Email</label>
+              <input type="email" id="d-email" placeholder="o.seu@email.pt">
+              <div class="field-erro" id="erro-email">Email obrigatório quando identificado.</div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Campo 2: Tipo de infração -->
+      <!-- 2. Tipo de infração -->
+      <div class="form-field">
+        <label>Tipo de Infração</label>
+        <select id="d-tipo">
+          <option value="">— Selecionar —</option>
+          <option>Assédio ou Discriminação</option>
+          <option>Incumprimento do Código de Conduta</option>
+          <option>Conflito de Interesses</option>
+          <option>Corrupção</option>
+          <option>Incumprimento de regras de prevenção de branqueamento de capitais e financiamento do terrorismo</option>
+          <option>Fraude</option>
+          <option>Furto/Roubo</option>
+          <option>Incumprimento de regras de sigilo ou segurança da informação</option>
+          <option>Incumprimento de regras de segurança</option>
+          <option>Uso Indevido ou desvio de recursos da empresa</option>
+          <option>Incumprimento de políticas ou normas internas da empresa</option>
+          <option>Abuso de Confiança</option>
+          <option>Outro tipo de infração</option>
+        </select>
+        <div class="field-erro" id="erro-tipo">Por favor selecione o tipo de infração.</div>
+      </div>
+
+      <!-- 3. Intervenientes -->
+      <div class="form-field">
+        <label>Identifique a(s) pessoa(s) interveniente(s) <span style="color:var(--fg-faint)">(opcional)</span></label>
+        <textarea id="d-intervenientes" rows="3" placeholder="Nome(s) e função(ões) da(s) pessoa(s) envolvida(s)"></textarea>
+      </div>
+
+      <!-- 4+5. Local e Data -->
+      <div class="form-grid">
         <div class="form-field">
-          <label>Tipo de Infração</label>
-          <select id="d-tipo">
-            <option value="">— Selecionar —</option>
-            <option>Assédio ou Discriminação</option>
-            <option>Incumprimento do Código de Conduta</option>
-            <option>Conflito de Interesses</option>
-            <option>Corrupção</option>
-            <option>Incumprimento de regras de prevenção de branqueamento de capitais e financiamento do terrorismo</option>
-            <option>Fraude</option>
-            <option>Furto/Roubo</option>
-            <option>Incumprimento de regras de sigilo ou segurança da informação</option>
-            <option>Incumprimento de regras de segurança</option>
-            <option>Uso Indevido ou desvio de recursos da empresa</option>
-            <option>Incumprimento de políticas ou normas internas da empresa</option>
-            <option>Abuso de Confiança</option>
-            <option>Outro tipo de infração</option>
-          </select>
-          <div class="field-erro" id="erro-tipo">Por favor selecione o tipo de infração.</div>
+          <label>Local dos eventos <span style="color:var(--fg-faint)">(opcional)</span></label>
+          <input type="text" id="d-local" placeholder="Ex: Balcão Lisboa — Chiado">
         </div>
-
-        <!-- Campo 3: Intervenientes -->
         <div class="form-field">
-          <label>Identifique a(s) pessoa(s) interveniente(s) <span style="color:var(--fg-faint)">(opcional)</span></label>
-          <textarea id="d-intervenientes" rows="3" placeholder="Nome(s) e função(ões) da(s) pessoa(s) envolvida(s)"></textarea>
+          <label>Data dos eventos <span style="color:var(--fg-faint)">(opcional)</span></label>
+          <input type="date" id="d-data">
         </div>
+      </div>
 
-        <!-- Campo 4 + 5: Local e Data -->
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Local dos eventos <span style="color:var(--fg-faint)">(opcional)</span></label>
-            <input type="text" id="d-local" placeholder="Ex: Balcão Lisboa — Chiado">
-          </div>
-          <div class="form-field">
-            <label>Data dos eventos <span style="color:var(--fg-faint)">(opcional)</span></label>
-            <input type="date" id="d-data">
-          </div>
+      <!-- 6. Descrição -->
+      <div class="form-field">
+        <label>Descrição da situação</label>
+        <textarea id="d-descricao" rows="6" placeholder="Descreva detalhadamente a situação que pretende reportar..."></textarea>
+        <div class="char-counter" id="char-counter">0 / mínimo 50 caracteres</div>
+        <div class="field-erro" id="erro-descricao">A descrição deve ter pelo menos 50 caracteres.</div>
+      </div>
+
+      <!-- 7. Documentação -->
+      <div>
+        <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Pretende anexar documentação de suporte?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="documentacao" value="nao" checked> Não</label>
+          <label class="radio-option"><input type="radio" name="documentacao" value="sim"> Sim</label>
         </div>
-
-        <!-- Campo 6: Descrição -->
-        <div class="form-field">
-          <label>Descrição da situação</label>
-          <textarea id="d-descricao" rows="6" placeholder="Descreva detalhadamente a situação que pretende reportar..."></textarea>
-          <div class="char-counter" id="char-counter">0 / mínimo 50 caracteres</div>
-          <div class="field-erro" id="erro-descricao">A descrição deve ter pelo menos 50 caracteres.</div>
-        </div>
-
-        <!-- Campo 7: Documentação -->
-        <div>
-          <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Pretende anexar documentação de suporte?</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="documentacao" value="nao" checked> Não
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="documentacao" value="sim"> Sim
-            </label>
-          </div>
-          <div class="toggle-section" id="campo-ficheiro">
-            <div class="form-field" style="margin-top:16px;">
-              <label>Ficheiro</label>
-              <input type="file" id="d-ficheiro" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-              <div style="font-size:12px;color:var(--fg-faint);margin-top:6px;">Formatos aceites: PDF, JPG, PNG, DOC, DOCX. Tamanho máximo: 10MB.</div>
-              <div class="field-erro" id="erro-ficheiro">Ficheiro demasiado grande ou formato não suportado.</div>
-            </div>
+        <div class="toggle-section" id="campo-ficheiro">
+          <div class="form-field" style="margin-top:16px;">
+            <label>Ficheiro</label>
+            <input type="file" id="d-ficheiro" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+            <div style="font-size:12px;color:var(--fg-faint);margin-top:6px;">Formatos aceites: PDF, JPG, PNG, DOC, DOCX. Tamanho máximo: 10MB.</div>
+            <div class="field-erro" id="erro-ficheiro">Ficheiro demasiado grande ou formato não suportado.</div>
           </div>
         </div>
+      </div>
 
-        <!-- Campo 8: Reporte anterior -->
-        <div>
-          <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Já procedeu ao reporte desta situação por outro meio?</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="reporte_anterior" value="nao" checked> Não
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="reporte_anterior" value="sim"> Sim
-            </label>
-          </div>
-          <div class="toggle-section" id="campo-meio-reporte">
-            <div class="form-field" style="margin-top:16px;">
-              <label>Qual o meio utilizado?</label>
-              <textarea id="d-meio-reporte" rows="3" placeholder="Ex: Email para superior hierárquico, comunicação verbal, etc."></textarea>
-            </div>
+      <!-- 8. Reporte anterior -->
+      <div>
+        <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Já procedeu ao reporte desta situação por outro meio?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="reporte_anterior" value="nao" checked> Não</label>
+          <label class="radio-option"><input type="radio" name="reporte_anterior" value="sim"> Sim</label>
+        </div>
+        <div class="toggle-section" id="campo-meio-reporte">
+          <div class="form-field" style="margin-top:16px;">
+            <label>Qual o meio utilizado?</label>
+            <textarea id="d-meio-reporte" rows="3" placeholder="Ex: Email para superior hierárquico, comunicação verbal, etc."></textarea>
           </div>
         </div>
+      </div>
 
-        <!-- Campo 9: Consentimento -->
-        <div>
-          <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
-            <input type="checkbox" id="d-consentimento" style="margin-top:3px;accent-color:var(--yellow);flex-shrink:0;">
-            <span style="font-size:14px;color:var(--fg-dim);line-height:1.55;">Li e aceito a <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a> e confirmo que as informações prestadas são verdadeiras e submetidas de boa-fé.</span>
-          </label>
-          <div class="field-erro" id="erro-consentimento">É necessário aceitar a Política de Privacidade.</div>
-        </div>
+      <!-- 9. Consentimento -->
+      <div>
+        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
+          <input type="checkbox" id="d-consentimento" style="margin-top:3px;accent-color:var(--yellow);flex-shrink:0;">
+          <span style="font-size:14px;color:var(--fg-dim);line-height:1.55;">Li e aceito a <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a> e confirmo que as informações prestadas são verdadeiras e submetidas de boa-fé.</span>
+        </label>
+        <div class="field-erro" id="erro-consentimento">É necessário aceitar a Política de Privacidade.</div>
+      </div>
 
-        <div style="display:none" aria-hidden="true"><input type="text" id="d-hp" name="website" tabindex="-1" autocomplete="off"></div>
+      <div style="display:none" aria-hidden="true"><input type="text" id="d-hp" name="website" tabindex="-1" autocomplete="off"></div>
 
-        <!-- Erro geral -->
-        <p id="erro-geral" style="display:none;color:#f87171;font-size:14px;padding:14px 16px;border-radius:8px;border:1px solid rgba(248,113,113,0.2);background:rgba(248,113,113,0.05);"></p>
+      <p class="erro-geral" id="erro-geral"></p>
 
-        <!-- Botão -->
-        <button type="button" id="btn-denuncia" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
-          Submeter Denúncia
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10m-5-5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+      <button type="button" id="btn-denuncia" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+        Submeter Denúncia
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10m-5-5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
 
-      </form>
-    </div>
+    </form>
   </div>
-</section>
+</div></section>
 
-<!-- Condições e nota legal -->
-<section class="section section-pad">
-  <div class="container" style="max-width:760px;margin:0 auto;">
-    <div class="section-head" style="grid-template-columns:1fr;margin-bottom:32px;">
-      <div><div class="eyebrow">Condições de utilização</div></div>
-    </div>
-    <ul class="dash-list" style="margin-bottom:40px;">
-      <li>Pode solicitar o anonimato selecionando essa opção no início do formulário.</li>
-      <li>Em regime de anonimato, guarde o código de referência gerado após submissão.</li>
-      <li>Se se identificar, será notificado da receção da denúncia através do email indicado (quando sistema de notificações estiver ativo).</li>
-      <li>Pode submeter documentação de suporte para fundamentar a sua denúncia.</li>
-      <li>Indique se já reportou a situação por outro meio ou a superior hierárquico.</li>
-    </ul>
-    <div class="block">
-      <p style="color:var(--fg-dim);font-size:14px;line-height:1.7;">A Unicâmbio é responsável pelo tratamento dos dados pessoais recolhidos através deste formulário, em conformidade com o RGPD. Todos os dados são tratados de forma confidencial. Consulte a nossa <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a>.</p>
-    </div>
+<section class="section section-pad"><div class="container" style="max-width:760px;margin:0 auto;">
+  <div class="eyebrow" style="margin-bottom:28px;">Condições de utilização</div>
+  <ul class="dash-list" style="margin-bottom:40px;">
+    <li>Pode solicitar o anonimato selecionando essa opção no início do formulário.</li>
+    <li>Em regime de anonimato, guarde o código de referência gerado após submissão.</li>
+    <li>Se se identificar, será notificado da receção da denúncia através do email indicado.</li>
+    <li>Pode submeter documentação de suporte para fundamentar a sua denúncia.</li>
+    <li>Indique se já reportou a situação por outro meio ou a superior hierárquico.</li>
+  </ul>
+  <div class="block">
+    <p style="color:var(--fg-dim);font-size:14px;line-height:1.7;">A Unicâmbio é responsável pelo tratamento dos dados pessoais recolhidos através deste formulário, em conformidade com o RGPD. Todos os dados são tratados de forma confidencial. Consulte a nossa <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a>.</p>
   </div>
-</section>
+</div></section>
 
 <div id="site-footer"></div>
-<script src="site.js"></script>
-<script>initNav('');</script>
+<script src="site-v2.js"></script>
+<script>initNav('sobre');</script>
 <script>
-
-// Toggle: identificado/anónimo
 document.querySelectorAll('input[name="identificado"]').forEach(r => {
   r.addEventListener('change', () => {
     const sim = document.querySelector('input[name="identificado"]:checked').value === 'sim';
@@ -257,23 +226,18 @@ document.querySelectorAll('input[name="identificado"]').forEach(r => {
   });
 });
 
-// Toggle: documentação
 document.querySelectorAll('input[name="documentacao"]').forEach(r => {
   r.addEventListener('change', () => {
-    const sim = document.querySelector('input[name="documentacao"]:checked').value === 'sim';
-    document.getElementById('campo-ficheiro').classList.toggle('visivel', sim);
+    document.getElementById('campo-ficheiro').classList.toggle('visivel', document.querySelector('input[name="documentacao"]:checked').value === 'sim');
   });
 });
 
-// Toggle: reporte anterior
 document.querySelectorAll('input[name="reporte_anterior"]').forEach(r => {
   r.addEventListener('change', () => {
-    const sim = document.querySelector('input[name="reporte_anterior"]:checked').value === 'sim';
-    document.getElementById('campo-meio-reporte').classList.toggle('visivel', sim);
+    document.getElementById('campo-meio-reporte').classList.toggle('visivel', document.querySelector('input[name="reporte_anterior"]:checked').value === 'sim');
   });
 });
 
-// Contador de caracteres
 const descricao = document.getElementById('d-descricao');
 const counter = document.getElementById('char-counter');
 descricao.addEventListener('input', () => {
@@ -282,43 +246,32 @@ descricao.addEventListener('input', () => {
   counter.className = 'char-counter' + (n >= 50 ? ' ok' : '');
 });
 
-// Validação de ficheiro
-document.getElementById('d-ficheiro').addEventListener('change', (e) => {
+document.getElementById('d-ficheiro').addEventListener('change', e => {
   const file = e.target.files[0];
-  const erroFicheiro = document.getElementById('erro-ficheiro');
   if (!file) return;
   const tiposPermitidos = ['application/pdf','image/jpeg','image/png','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-  if (!tiposPermitidos.includes(file.type) || file.size > 10 * 1024 * 1024) {
-    erroFicheiro.style.display = 'block';
-    e.target.value = '';
-  } else {
-    erroFicheiro.style.display = 'none';
-  }
+  const erroFicheiro = document.getElementById('erro-ficheiro');
+  if (!tiposPermitidos.includes(file.type) || file.size > 10*1024*1024) {
+    erroFicheiro.style.display = 'block'; e.target.value = '';
+  } else { erroFicheiro.style.display = 'none'; }
 });
 
-// Gerar código de referência
 function gerarCodigo() {
-  const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
-  const randomHex = array[0].toString(16).toUpperCase().padStart(8, '0');
-  return `DEN-${randomHex}`;
+  const a = new Uint32Array(1); crypto.getRandomValues(a);
+  return `DEN-${a[0].toString(16).toUpperCase().padStart(8,'0')}`;
 }
 
-// Submissão
 let _denunciaLastSubmit = 0;
 document.getElementById('btn-denuncia').addEventListener('click', async () => {
   const now = Date.now();
+  const errGeral = document.getElementById('erro-geral');
   if (now - _denunciaLastSubmit < 60000) {
-    const s = Math.ceil((60000 - (now - _denunciaLastSubmit)) / 1000);
-    const errGeral = document.getElementById('erro-geral');
-    errGeral.textContent = `Aguarde ${s}s antes de submeter novamente.`;
-    errGeral.style.display = 'block';
-    return;
+    const s = Math.ceil((60000-(now-_denunciaLastSubmit))/1000);
+    errGeral.textContent = `Aguarde ${s}s antes de submeter novamente.`; errGeral.style.display='block'; return;
   }
   if (document.getElementById('d-hp').value) return;
-  // Limpar erros
-  document.querySelectorAll('.field-erro').forEach(e => e.style.display = 'none');
-  document.getElementById('erro-geral').style.display = 'none';
+  document.querySelectorAll('.field-erro').forEach(e => e.style.display='none');
+  errGeral.style.display='none';
 
   const identificado = document.querySelector('input[name="identificado"]:checked').value === 'sim';
   const nome = document.getElementById('d-nome').value.trim();
@@ -328,109 +281,85 @@ document.getElementById('btn-denuncia').addEventListener('click', async () => {
   const consentimento = document.getElementById('d-consentimento').checked;
 
   let valido = true;
-
-  if (identificado && !nome) { document.getElementById('erro-nome').style.display = 'block'; valido = false; }
-  if (identificado && !email) { document.getElementById('erro-email').style.display = 'block'; valido = false; }
-  if (!tipo) { document.getElementById('erro-tipo').style.display = 'block'; valido = false; }
-  if (desc.length < 50) { document.getElementById('erro-descricao').style.display = 'block'; valido = false; }
-  if (!consentimento) { document.getElementById('erro-consentimento').style.display = 'block'; valido = false; }
+  if (identificado && !nome) { document.getElementById('erro-nome').style.display='block'; valido=false; }
+  if (identificado && !email) { document.getElementById('erro-email').style.display='block'; valido=false; }
+  if (!tipo) { document.getElementById('erro-tipo').style.display='block'; valido=false; }
+  if (desc.length < 50) { document.getElementById('erro-descricao').style.display='block'; valido=false; }
+  if (!consentimento) { document.getElementById('erro-consentimento').style.display='block'; valido=false; }
   if (!valido) return;
 
   const btn = document.getElementById('btn-denuncia');
-  btn.textContent = 'A submeter…';
-  btn.disabled = true;
+  btn.textContent='A submeter…'; btn.disabled=true;
 
   const codigo = gerarCodigo();
   const temDoc = document.querySelector('input[name="documentacao"]:checked').value === 'sim';
   const reporteAnterior = document.querySelector('input[name="reporte_anterior"]:checked').value === 'sim';
 
-  // Upload do ficheiro para o Supabase Storage
-  let ficheiroUrl = null;
-  let ficheiroNome = null;
+  let ficheiroUrl = null, ficheiroNome = null;
   if (temDoc) {
     const ficheiro = document.getElementById('d-ficheiro').files[0];
     if (ficheiro) {
-      btn.textContent = 'A enviar ficheiro…';
+      btn.textContent='A enviar ficheiro…';
       const ext = ficheiro.name.split('.').pop();
       const caminho = `${codigo}.${ext}`;
-      const uploadRes = await fetch(`${SUPA_URL}/storage/v1/object/denuncias-ficheiros/${caminho}`, {
+      const uploadForm = new FormData();
+      uploadForm.append('file', ficheiro);
+      uploadForm.append('caminho', caminho);
+      const uploadRes = await fetch('/api/denuncia-upload', {
         method: 'POST',
-        headers: {
-          'apikey': SUPA_KEY,
-          'Authorization': `Bearer ${SUPA_KEY}`,
-          'Content-Type': ficheiro.type,
-          'x-upsert': 'true',
-        },
-        body: ficheiro,
+        body: uploadForm,
       });
       if (uploadRes.ok) {
-        ficheiroUrl = `${SUPA_URL}/storage/v1/object/denuncias-ficheiros/${caminho}`;
+        const uploadData = await uploadRes.json();
+        ficheiroUrl = uploadData.url || null;
         ficheiroNome = ficheiro.name;
       } else {
-        const errGeral = document.getElementById('erro-geral');
-        errGeral.textContent = 'Erro ao enviar ficheiro. Tente novamente.';
-        errGeral.style.display = 'block';
-        btn.textContent = 'Submeter Denúncia';
-        btn.disabled = false;
-        return;
+        errGeral.textContent='Erro ao enviar ficheiro. Tente novamente.'; errGeral.style.display='block';
+        btn.textContent='Submeter Denúncia'; btn.disabled=false; return;
       }
-      btn.textContent = 'A submeter…';
+      btn.textContent='A submeter…';
     }
   }
 
   const denuncia = {
-    codigo,
-    identificado,
+    codigo, identificado,
     nome: identificado ? nome : null,
     email: identificado ? email : null,
-    telefone: identificado ? document.getElementById('d-telefone').value.trim() || null : null,
+    telefone: identificado ? document.getElementById('d-telefone').value.trim()||null : null,
     tipo_infracao: tipo,
-    intervenientes: document.getElementById('d-intervenientes').value.trim() || null,
-    local: document.getElementById('d-local').value.trim() || null,
-    data_evento: document.getElementById('d-data').value || null,
+    intervenientes: document.getElementById('d-intervenientes').value.trim()||null,
+    local: document.getElementById('d-local').value.trim()||null,
+    data_evento: document.getElementById('d-data').value||null,
     descricao: desc,
     tem_documentacao: temDoc,
     reporte_anterior: reporteAnterior,
-    meio_reporte: reporteAnterior ? document.getElementById('d-meio-reporte').value.trim() || null : null,
+    meio_reporte: reporteAnterior ? document.getElementById('d-meio-reporte').value.trim()||null : null,
     ficheiro_url: ficheiroUrl,
     ficheiro_nome: ficheiroNome,
   };
 
   try {
-    const res = await fetch(`${SUPA_URL}/rest/v1/denuncias`, {
+    const res = await fetch('/api/denuncia', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPA_KEY,
-        'Authorization': `Bearer ${SUPA_KEY}`,
-        'Prefer': 'return=minimal'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(denuncia),
     });
-
     if (res.ok) {
       _denunciaLastSubmit = Date.now();
-      document.getElementById('form-denuncia').style.display = 'none';
+      document.getElementById('form-denuncia').style.display='none';
       document.getElementById('codigo-display').textContent = codigo;
-      document.getElementById(identificado ? 'msg-identificado' : 'msg-anonimo').style.display = 'block';
-      document.getElementById('sucesso-box').style.display = 'block';
+      document.getElementById(identificado ? 'msg-identificado' : 'msg-anonimo').style.display='block';
+      document.getElementById('sucesso-box').style.display='block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       const data = await res.json();
-      const errGeral = document.getElementById('erro-geral');
-      errGeral.textContent = data.message || 'Erro ao submeter. Tente novamente.';
-      errGeral.style.display = 'block';
-      btn.textContent = 'Submeter Denúncia';
-      btn.disabled = false;
+      errGeral.textContent = data.message||'Erro ao submeter. Tente novamente.'; errGeral.style.display='block';
+      btn.textContent='Submeter Denúncia'; btn.disabled=false;
     }
   } catch {
-    const errGeral = document.getElementById('erro-geral');
-    errGeral.textContent = 'Sem ligação ao servidor. Tente mais tarde.';
-    errGeral.style.display = 'block';
-    btn.textContent = 'Submeter Denúncia';
-    btn.disabled = false;
+    errGeral.textContent='Sem ligação ao servidor. Tente mais tarde.'; errGeral.style.display='block';
+    btn.textContent='Submeter Denúncia'; btn.disabled=false;
   }
 });
 </script>
-</body>
-</html>
+</body></html>
