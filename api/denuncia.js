@@ -12,6 +12,9 @@ function isRateLimited(ip) {
   const windowMs = 60 * 1000;
   const max = 3;
   const key = `denuncia:${ip}`;
+  if (rateLimitMap.size > 5000) {
+    for (const [k, v] of rateLimitMap) { if (now > v.resetAt) rateLimitMap.delete(k); }
+  }
   const record = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs };
   if (now > record.resetAt) { record.count = 0; record.resetAt = now + windowMs; }
   record.count++;
@@ -55,7 +58,10 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const contentLength = parseInt(req.headers['content-length'] || 0);
+  if (contentLength > 20480) return res.status(413).json({ error: 'Payload demasiado grande.' });
+
+  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
   if (isRateLimited(ip)) {
     return res.status(429).json({ error: 'Demasiados pedidos. Tente novamente em 1 minuto.' });
   }

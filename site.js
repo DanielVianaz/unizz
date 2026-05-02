@@ -1,7 +1,5 @@
 /* Unicâmbio — shared nav + footer injection + common interactions */
 
-const SUPA_URL = 'https://nesdgjxqngzdlborpfru.supabase.co';
-const SUPA_KEY = 'sb_publishable_N4BMyIL_7hjXu7YrQu0lsw_m30GqlEB';
 
 const UNI_NAV = `
 <div class="topbar">
