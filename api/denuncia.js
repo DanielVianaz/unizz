@@ -5,21 +5,27 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Stricter rate limit for denuncias: 3 per minute
-const rateLimitMap = new Map();
-function isRateLimited(ip) {
-  const now = Date.now();
-  const windowMs = 60 * 1000;
+async function isRateLimited(ip, endpoint) {
   const max = 3;
-  const key = `denuncia:${ip}`;
-  if (rateLimitMap.size > 5000) {
-    for (const [k, v] of rateLimitMap) { if (now > v.resetAt) rateLimitMap.delete(k); }
+  const since = new Date(Date.now() - 60000).toISOString();
+  try {
+    const { count } = await supabase
+      .from('rate_limits')
+      .select('*', { count: 'exact', head: true })
+      .eq('ip', ip)
+      .eq('endpoint', endpoint)
+      .gte('criado_em', since);
+    if (count >= max) return true;
+    await supabase.from('rate_limits').insert({ ip, endpoint });
+    if (Math.random() < 0.02) {
+      await supabase.from('rate_limits')
+        .delete()
+        .lt('criado_em', new Date(Date.now() - 120000).toISOString());
+    }
+    return false;
+  } catch {
+    return false;
   }
-  const record = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs };
-  if (now > record.resetAt) { record.count = 0; record.resetAt = now + windowMs; }
-  record.count++;
-  rateLimitMap.set(key, record);
-  return record.count > max;
 }
 
 function sanitize(str, maxLen) {
@@ -66,28 +72,18 @@ module.exports = async (req, res) => {
   const contentLength = parseInt(req.headers['content-length'] || 0);
   if (contentLength > 20480) return res.status(413).json({ error: 'Payload demasiado grande.' });
 
-  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
-  if (isRateLimited(ip)) {
+  const forwarded = req.headers['x-forwarded-for'];
+  const ip = forwarded ? forwarded.split(',').pop().trim() : req.socket?.remoteAddress || 'unknown';
+  if (await isRateLimited(ip, 'denuncia')) {
     return res.status(429).json({ error: 'Demasiados pedidos. Tente novamente em 1 minuto.' });
   }
 
   const {
-    codigo,
-    identificado,
-    nome,
-    email,
-    telefone,
-    tipo_infracao,
-    intervenientes,
-    local,
-    data_evento,
-    descricao,
-    tem_documentacao,
-    reporte_anterior,
-    meio_reporte
+    codigo, identificado, nome, email, telefone, tipo_infracao,
+    intervenientes, local, data_evento, descricao,
+    tem_documentacao, reporte_anterior, meio_reporte
   } = req.body || {};
 
-  // Required field validation
   if (!tipo_infracao) return res.status(400).json({ error: 'O tipo de infração é obrigatório.' });
   if (!VALID_TIPOS.includes(tipo_infracao)) return res.status(400).json({ error: 'Tipo de infração inválido.' });
   if (!descricao || typeof descricao !== 'string' || descricao.trim().length < 50) {
@@ -97,7 +93,6 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Código de referência inválido.' });
   }
 
-  // If identified, validate contact fields
   if (identificado === true || identificado === 'true') {
     if (!nome || typeof nome !== 'string' || nome.trim().length < 2) {
       return res.status(400).json({ error: 'Nome obrigatório quando identificado.' });
@@ -107,7 +102,6 @@ module.exports = async (req, res) => {
     if (telefone && !validatePhone(telefone)) return res.status(400).json({ error: 'Telefone inválido.' });
   }
 
-  // Validate optional date
   if (data_evento && !/^\d{4}-\d{2}-\d{2}$/.test(data_evento)) {
     return res.status(400).json({ error: 'Data de evento inválida.' });
   }

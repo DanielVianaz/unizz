@@ -5,21 +5,27 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Simple in-memory rate limiting
-const rateLimitMap = new Map();
-function isRateLimited(ip) {
-  const now = Date.now();
-  const windowMs = 60 * 1000;
+async function isRateLimited(ip, endpoint) {
   const max = 5;
-  const key = `reserva:${ip}`;
-  if (rateLimitMap.size > 5000) {
-    for (const [k, v] of rateLimitMap) { if (now > v.resetAt) rateLimitMap.delete(k); }
+  const since = new Date(Date.now() - 60000).toISOString();
+  try {
+    const { count } = await supabase
+      .from('rate_limits')
+      .select('*', { count: 'exact', head: true })
+      .eq('ip', ip)
+      .eq('endpoint', endpoint)
+      .gte('criado_em', since);
+    if (count >= max) return true;
+    await supabase.from('rate_limits').insert({ ip, endpoint });
+    if (Math.random() < 0.02) {
+      await supabase.from('rate_limits')
+        .delete()
+        .lt('criado_em', new Date(Date.now() - 120000).toISOString());
+    }
+    return false;
+  } catch {
+    return false;
   }
-  const record = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs };
-  if (now > record.resetAt) { record.count = 0; record.resetAt = now + windowMs; }
-  record.count++;
-  rateLimitMap.set(key, record);
-  return record.count > max;
 }
 
 function validateEmail(email) {
@@ -38,7 +44,6 @@ function sanitize(str) {
 const VALID_CURRENCIES = ['USD','GBP','BRL','JPY','CHF','AED','CNY','CAD','AUD','ZAR','TRY','INR','MXN','NOK','SEK','DKK','PLN','HUF','RON','CZK','HKD','SGD','NZD','MYR','SAR','QAR','EGP','ILS','MAD','CVE','MZN','ARS','CLP','DOP','IDR','PHP','KRW','THB','VND','KHR','MOP','RUB','UAH','ISK','XAF','XOF','NAD','COP','TND'];
 
 module.exports = async (req, res) => {
-  // CORS
   const origin = req.headers.origin || '';
   const allowed = ['https://unicambio.pt', 'https://www.unicambio.pt'];
   if (allowed.includes(origin) || origin.endsWith('.vercel.app')) {
@@ -53,14 +58,14 @@ module.exports = async (req, res) => {
   const contentLength = parseInt(req.headers['content-length'] || 0);
   if (contentLength > 10240) return res.status(413).json({ error: 'Payload demasiado grande.' });
 
-  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
-  if (isRateLimited(ip)) {
+  const forwarded = req.headers['x-forwarded-for'];
+  const ip = forwarded ? forwarded.split(',').pop().trim() : req.socket?.remoteAddress || 'unknown';
+  if (await isRateLimited(ip, 'reserva')) {
     return res.status(429).json({ error: 'Demasiados pedidos. Tente novamente em 1 minuto.' });
   }
 
   const { nome, email, telemovel, moeda, montante, data_levantamento, balcao } = req.body || {};
 
-  // Validate
   if (!nome || !email || !telemovel || !moeda || !montante || !data_levantamento || !balcao) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
   }

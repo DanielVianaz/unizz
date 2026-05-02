@@ -5,20 +5,27 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const rateLimitMap = new Map();
-function isRateLimited(ip) {
-  const now = Date.now();
-  const windowMs = 60 * 1000;
+async function isRateLimited(ip, endpoint) {
   const max = 5;
-  const key = `contacto:${ip}`;
-  if (rateLimitMap.size > 5000) {
-    for (const [k, v] of rateLimitMap) { if (now > v.resetAt) rateLimitMap.delete(k); }
+  const since = new Date(Date.now() - 60000).toISOString();
+  try {
+    const { count } = await supabase
+      .from('rate_limits')
+      .select('*', { count: 'exact', head: true })
+      .eq('ip', ip)
+      .eq('endpoint', endpoint)
+      .gte('criado_em', since);
+    if (count >= max) return true;
+    await supabase.from('rate_limits').insert({ ip, endpoint });
+    if (Math.random() < 0.02) {
+      await supabase.from('rate_limits')
+        .delete()
+        .lt('criado_em', new Date(Date.now() - 120000).toISOString());
+    }
+    return false;
+  } catch {
+    return false;
   }
-  const record = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs };
-  if (now > record.resetAt) { record.count = 0; record.resetAt = now + windowMs; }
-  record.count++;
-  rateLimitMap.set(key, record);
-  return record.count > max;
 }
 
 function sanitize(str) {
@@ -43,8 +50,9 @@ module.exports = async (req, res) => {
   const contentLength = parseInt(req.headers['content-length'] || 0);
   if (contentLength > 10240) return res.status(413).json({ error: 'Payload demasiado grande.' });
 
-  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
-  if (isRateLimited(ip)) return res.status(429).json({ error: 'Demasiados pedidos. Tente novamente em 1 minuto.' });
+  const forwarded = req.headers['x-forwarded-for'];
+  const ip = forwarded ? forwarded.split(',').pop().trim() : req.socket?.remoteAddress || 'unknown';
+  if (await isRateLimited(ip, 'contacto')) return res.status(429).json({ error: 'Demasiados pedidos. Tente novamente em 1 minuto.' });
 
   const { nome, email, assunto, mensagem } = req.body || {};
 
