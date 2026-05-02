@@ -117,7 +117,7 @@ module.exports = async (req, res) => {
       disponibilidade: disponibilidade ? sanitize(disponibilidade, 50) : null,
       mensagem: mensagem ? sanitize(mensagem, 3000) : null,
       rgpd: true,
-      created_at: new Date().toISOString()
+      criado_em: new Date().toISOString()
     }]);
 
     if (error) {

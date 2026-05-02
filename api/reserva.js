@@ -80,7 +80,7 @@ module.exports = async (req, res) => {
       montante: amount,
       data_levantamento,
       balcao: sanitize(balcao),
-      created_at: new Date().toISOString()
+      criado_em: new Date().toISOString()
     }]);
 
     if (error) {

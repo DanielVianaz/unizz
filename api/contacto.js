@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
       email: sanitize(email),
       assunto: sanitize(assunto),
       mensagem: sanitize(mensagem),
-      created_at: new Date().toISOString()
+      criado_em: new Date().toISOString()
     }]);
 
     if (error) {

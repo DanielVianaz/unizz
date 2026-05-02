@@ -129,7 +129,7 @@ module.exports = async (req, res) => {
       tem_documentacao: tem_documentacao === true || tem_documentacao === 'true',
       reporte_anterior: reporte_anterior === true || reporte_anterior === 'true',
       meio_reporte: meio_reporte ? sanitize(meio_reporte, 500) : null,
-      created_at: new Date().toISOString()
+      criado_em: new Date().toISOString()
     }]);
 
     if (error) {
