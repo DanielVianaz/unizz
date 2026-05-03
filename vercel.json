@@ -18,7 +18,7 @@
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
         { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://unpkg.com; font-src 'self' https://fonts.bunny.net; img-src 'self' data: https://images.unsplash.com https://flagcdn.com https://unpkg.com https://www.unicambio.pt https://tile.openstreetmap.org; connect-src 'self' https://nesdgjxqngzdlborpfru.supabase.co https://tile.openstreetmap.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://unpkg.com; font-src 'self' https://fonts.bunny.net; img-src 'self' data: https://images.unsplash.com https://flagcdn.com https://unpkg.com https://www.unicambio.pt https://tile.openstreetmap.org https://*.basemaps.cartocdn.com; connect-src 'self' https://nesdgjxqngzdlborpfru.supabase.co https://tile.openstreetmap.org https://nominatim.openstreetmap.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" }
       ]
     }
   ]
