@@ -111,12 +111,14 @@ const UNI_FOOTER = `
         <a href="files/precario.pdf" target="_blank" rel="noopener noreferrer">Preçário (PDF) ↗</a>
         <a href="files/comissoes.pdf" target="_blank" rel="noopener noreferrer">Informação sobre Comissões ↗</a>
         <a href="privacidade.html">Política de Privacidade</a>
+        <a href="acessibilidade.html">Acessibilidade</a>
         <a href="informacoes-legais.html">Informações Legais</a>
       </div>
       <div class="footer-col">
         <h4>Apoio ao Cliente</h4>
         <a href="contactos.html">Contactos</a>
         <a href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener noreferrer">Livro de Reclamações ↗</a>
+        <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">Plataforma ODR (UE) ↗</a>
         <a href="resolucao-conflitos.html">Resolução de Conflitos</a>
         <a href="fraude.html">Reporte de Fraude</a>
         <a href="denuncias.html">Canal de Denúncias</a>
@@ -132,11 +134,16 @@ const UNI_FOOTER = `
 </footer>
 `;
 
+const COOKIE_BANNER = `<div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0d1929;border-top:1px solid rgba(255,209,0,.15);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 -4px 24px rgba(0,0,0,.3);font-size:13px;line-height:1.5;"><p style="margin:0;color:rgba(255,255,255,.7);max-width:800px;">Este site utiliza recursos externos (Google Fonts, mapas Leaflet) que transmitem o seu endereço IP a servidores de terceiros. Consulte a nossa <a href="privacidade.html" style="color:#FFD100;text-decoration:underline;">Política de Privacidade</a>.</p><button onclick="document.getElementById('cookie-banner').remove();localStorage.setItem('uni_notice','1')" style="background:#FFD100;color:#000;border:none;padding:9px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;font-size:13px;">Aceitar e Fechar</button></div>`;
+
 function initNav(activeKey) {
   const navHost = document.getElementById('site-nav');
   if (navHost) navHost.innerHTML = UNI_NAV;
   const footerHost = document.getElementById('site-footer');
   if (footerHost) footerHost.innerHTML = UNI_FOOTER;
+  if (!localStorage.getItem('uni_notice')) {
+    document.body.insertAdjacentHTML('beforeend', COOKIE_BANNER);
+  }
   if (activeKey) {
     const link = document.querySelector(`[data-nav="${activeKey}"]`);
     if (link) link.classList.add('active');

@@ -1,8 +1,8 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="unicambio-logo.svg" type="image/svg+xml">
 <title>Canal de Denúncias · Unicâmbio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.bunny.net"><link href="https://fonts.bunny.net/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site-v2.css">
 <link rel="stylesheet" href="dark-section.css">
 <meta name="description" content="Canal de denúncias Unicâmbio — reporte práticas irregulares de forma confidencial e, se desejar, anónima. Conformidade com o RGPD.">
@@ -148,19 +148,12 @@
 
       <!-- 7. Documentação -->
       <div>
-        <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Pretende anexar documentação de suporte?</label>
+        <label style="display:block;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:12px;">Tem documentação de suporte?</label>
         <div class="radio-group">
           <label class="radio-option"><input type="radio" name="documentacao" value="nao" checked> Não</label>
           <label class="radio-option"><input type="radio" name="documentacao" value="sim"> Sim</label>
         </div>
-        <div class="toggle-section" id="campo-ficheiro">
-          <div class="form-field" style="margin-top:16px;">
-            <label>Ficheiro</label>
-            <input type="file" id="d-ficheiro" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-            <div style="font-size:12px;color:var(--fg-faint);margin-top:6px;">Formatos aceites: PDF, JPG, PNG, DOC, DOCX. Tamanho máximo: 10MB.</div>
-            <div class="field-erro" id="erro-ficheiro">Ficheiro demasiado grande ou formato não suportado.</div>
-          </div>
-        </div>
+        <div class="nota-anonimo" style="margin-top:12px;">Se dispõe de documentação de suporte, guarde o código de referência gerado após submissão e envie-a por email para <a href="mailto:denuncias@unicambio.pt" style="color:var(--yellow);">denuncias@unicambio.pt</a> com o código no assunto.</div>
       </div>
 
       <!-- 8. Reporte anterior -->
@@ -201,16 +194,37 @@
 </div></section>
 
 <section class="section section-pad"><div class="container" style="max-width:760px;margin:0 auto;">
-  <div class="eyebrow" style="margin-bottom:28px;">Condições de utilização</div>
+  <div class="eyebrow" style="margin-bottom:28px;">Condições de utilização e proteção do denunciante</div>
   <ul class="dash-list" style="margin-bottom:40px;">
     <li>Pode solicitar o anonimato selecionando essa opção no início do formulário.</li>
     <li>Em regime de anonimato, guarde o código de referência gerado após submissão.</li>
-    <li>Se se identificar, será notificado da receção da denúncia através do email indicado.</li>
-    <li>Pode submeter documentação de suporte para fundamentar a sua denúncia.</li>
+    <li>Se se identificar, será notificado da receção da denúncia por email.</li>
+    <li>Para enviar documentação de suporte, use o email <a href="mailto:denuncias@unicambio.pt" style="color:var(--yellow);">denuncias@unicambio.pt</a> com o código de referência no assunto.</li>
     <li>Indique se já reportou a situação por outro meio ou a superior hierárquico.</li>
   </ul>
+
+  <div class="block" style="margin-bottom:24px;">
+    <h4 style="font-size:16px;letter-spacing:-0.01em;margin-bottom:12px;">Prazos de tratamento (Lei 93/2021)</h4>
+    <ul class="dash-list">
+      <li>Acuse de recibo da denúncia: <strong style="color:var(--fg);">7 dias úteis</strong> após receção.</li>
+      <li>Informação sobre o seguimento dado à denúncia: até <strong style="color:var(--fg);">3 meses</strong> após o acuse de recibo.</li>
+      <li>Prazo de conservação dos registos: <strong style="color:var(--fg);">5 anos</strong> após conclusão do processo.</li>
+    </ul>
+  </div>
+
+  <div class="block" style="background:rgba(255,209,0,0.04);border-color:rgba(255,209,0,0.2);margin-bottom:24px;">
+    <h4 style="font-size:16px;letter-spacing:-0.01em;margin-bottom:12px;">Proteção do denunciante</h4>
+    <p style="color:var(--fg-dim);font-size:14px;line-height:1.7;margin-bottom:12px;">Nos termos da <strong style="color:var(--fg);">Lei 93/2021</strong> (que transpõe a Diretiva UE 2019/1937), o denunciante que reporte de boa-fé beneficia das seguintes proteções:</p>
+    <ul class="dash-list">
+      <li><strong style="color:var(--fg);">Proibição de retaliação</strong> — é proibido qualquer ato de retaliação contra o denunciante, incluindo despedimento, suspensão, rebaixamento de categoria ou discriminação.</li>
+      <li><strong style="color:var(--fg);">Confidencialidade da identidade</strong> — a identidade do denunciante é mantida estritamente confidencial e não pode ser divulgada sem o seu consentimento.</li>
+      <li><strong style="color:var(--fg);">Isenção de responsabilidade</strong> — o denunciante não pode ser responsabilizado pela divulgação de informações, desde que tenha fundamento razoável para crer que a denúncia era necessária.</li>
+      <li><strong style="color:var(--fg);">Denúncia externa</strong> — pode também reportar diretamente ao Banco de Portugal ou outras autoridades competentes (art. 12 Lei 93/2021).</li>
+    </ul>
+  </div>
+
   <div class="block">
-    <p style="color:var(--fg-dim);font-size:14px;line-height:1.7;">A Unicâmbio é responsável pelo tratamento dos dados pessoais recolhidos através deste formulário, em conformidade com o RGPD. Todos os dados são tratados de forma confidencial. Consulte a nossa <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a>.</p>
+    <p style="color:var(--fg-dim);font-size:14px;line-height:1.7;">A Unicâmbio é responsável pelo tratamento dos dados pessoais recolhidos através deste formulário, em conformidade com o RGPD e a Lei 93/2021. Todos os dados são tratados de forma confidencial. Consulte a nossa <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a>.</p>
   </div>
 </div></section>
 
@@ -226,11 +240,6 @@ document.querySelectorAll('input[name="identificado"]').forEach(r => {
   });
 });
 
-document.querySelectorAll('input[name="documentacao"]').forEach(r => {
-  r.addEventListener('change', () => {
-    document.getElementById('campo-ficheiro').classList.toggle('visivel', document.querySelector('input[name="documentacao"]:checked').value === 'sim');
-  });
-});
 
 document.querySelectorAll('input[name="reporte_anterior"]').forEach(r => {
   r.addEventListener('change', () => {
@@ -246,15 +255,6 @@ descricao.addEventListener('input', () => {
   counter.className = 'char-counter' + (n >= 50 ? ' ok' : '');
 });
 
-document.getElementById('d-ficheiro').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const tiposPermitidos = ['application/pdf','image/jpeg','image/png','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-  const erroFicheiro = document.getElementById('erro-ficheiro');
-  if (!tiposPermitidos.includes(file.type) || file.size > 10*1024*1024) {
-    erroFicheiro.style.display = 'block'; e.target.value = '';
-  } else { erroFicheiro.style.display = 'none'; }
-});
 
 function gerarCodigo() {
   const a = new Uint32Array(1); crypto.getRandomValues(a);
@@ -295,32 +295,6 @@ document.getElementById('btn-denuncia').addEventListener('click', async () => {
   const temDoc = document.querySelector('input[name="documentacao"]:checked').value === 'sim';
   const reporteAnterior = document.querySelector('input[name="reporte_anterior"]:checked').value === 'sim';
 
-  let ficheiroUrl = null, ficheiroNome = null;
-  if (temDoc) {
-    const ficheiro = document.getElementById('d-ficheiro').files[0];
-    if (ficheiro) {
-      btn.textContent='A enviar ficheiro…';
-      const ext = ficheiro.name.split('.').pop();
-      const caminho = `${codigo}.${ext}`;
-      const uploadForm = new FormData();
-      uploadForm.append('file', ficheiro);
-      uploadForm.append('caminho', caminho);
-      const uploadRes = await fetch('/api/denuncia-upload', {
-        method: 'POST',
-        body: uploadForm,
-      });
-      if (uploadRes.ok) {
-        const uploadData = await uploadRes.json();
-        ficheiroUrl = uploadData.url || null;
-        ficheiroNome = ficheiro.name;
-      } else {
-        errGeral.textContent='Erro ao enviar ficheiro. Tente novamente.'; errGeral.style.display='block';
-        btn.textContent='Submeter Denúncia'; btn.disabled=false; return;
-      }
-      btn.textContent='A submeter…';
-    }
-  }
-
   const denuncia = {
     codigo, identificado,
     nome: identificado ? nome : null,
@@ -334,8 +308,6 @@ document.getElementById('btn-denuncia').addEventListener('click', async () => {
     tem_documentacao: temDoc,
     reporte_anterior: reporteAnterior,
     meio_reporte: reporteAnterior ? document.getElementById('d-meio-reporte').value.trim()||null : null,
-    ficheiro_url: ficheiroUrl,
-    ficheiro_nome: ficheiroNome,
   };
 
   try {

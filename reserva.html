@@ -1,12 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="unicambio-logo.svg" type="image/svg+xml">
 <title>Reserva de Moeda · Unicâmbio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.bunny.net"><link href="https://fonts.bunny.net/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site-v2.css">
 <link rel="stylesheet" href="dark-section.css">
 <meta name="description" content="Reserve moeda estrangeira online com câmbio fixo. Levante no balcão mais conveniente — centro da cidade ou aeroporto. Mais de 50 moedas disponíveis.">
@@ -244,6 +243,14 @@
               <input type="tel" id="r-telefone" placeholder="(+351) 912 345 678">
             </div>
             <div class="form-field full">
+              <div style="font-size:12px;color:var(--fg-faint);line-height:1.6;margin-bottom:12px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg-2);">
+                <strong style="color:var(--fg-dim);display:block;margin-bottom:6px;">Condições da reserva</strong>
+                A reserva confirma a disponibilidade da moeda e trava o câmbio no momento da submissão. O levantamento deve ser efetuado no balcão e data indicados. Nos termos do Art. 17(l) do DL 24/2014, o <strong style="color:var(--fg-dim);">direito de arrependimento não é aplicável</strong> a este serviço, uma vez que o preço depende de flutuações do mercado cambial. Consulte a <a href="privacidade.html" style="color:var(--yellow);">Política de Privacidade</a>.
+              </div>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;">
+                <input type="checkbox" id="r-termos" style="margin-top:2px;accent-color:var(--yellow);flex-shrink:0;">
+                <span style="font-size:13px;color:var(--fg-dim);line-height:1.5;">Li e aceito as condições da reserva e a Política de Privacidade.</span>
+              </label>
               <p id="r-erro" style="display:none;color:#e53e3e;font-size:13px;margin-bottom:8px;"></p>
               <button type="button" id="btn-reserva" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Confirmar Reserva</button>
             </div>
@@ -300,6 +307,7 @@ document.getElementById('btn-reserva').addEventListener('click', async () => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { erro.textContent='Email inválido.'; erro.style.display='block'; return; }
   if (!/^\+?[\d\s\-()]{8,}$/.test(telemovel)) { erro.textContent='Telefone inválido.'; erro.style.display='block'; return; }
   if (montante < 10) { erro.textContent='Quantia mínima: 10€.'; erro.style.display='block'; return; }
+  if (!document.getElementById('r-termos').checked) { erro.textContent='É necessário aceitar as condições da reserva.'; erro.style.display='block'; return; }
   erro.style.display='none';
 
   const btn = document.getElementById('btn-reserva');

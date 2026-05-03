@@ -1,4 +1,4 @@
-﻿/* Unicâmbio — shared nav + footer injection + common interactions */
+/* Unicâmbio — shared nav + footer injection + common interactions */
 
 const UNI_NAV = `
 <div class="topbar">
@@ -105,16 +105,15 @@ const UNI_FOOTER = `
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
-        <a href="#">Preçário (PDF)</a>
-        <a href="#">Documento de Informação sobre Comissões</a>
-        <a href="#">Política de Privacidade</a>
-        <a href="#">Informações Legais</a>
-        <a href="https://www.livroreclamacoes.pt/inicio" target="_blank">Livro de Reclamações ↗</a>
-        <a href="#">Resolução de Conflitos</a>
-        <a href="#">Canal de Denúncias</a>
-        <a href="#">Reporte de Fraude</a>
-        <a href="#">Serviço de Mudança de Conta</a>
-        <a href="#">API PSD2</a>
+        <a href="privacidade.html">Política de Privacidade</a>
+        <a href="acessibilidade.html">Acessibilidade</a>
+        <a href="informacoes-legais.html">Informações Legais</a>
+        <a href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener noreferrer">Livro de Reclamações ↗</a>
+        <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">Plataforma ODR (UE) ↗</a>
+        <a href="resolucao-conflitos.html">Resolução de Conflitos</a>
+        <a href="denuncias.html">Canal de Denúncias</a>
+        <a href="fraude.html">Reporte de Fraude</a>
+        <a href="mudanca-conta.html">Serviço de Mudança de Conta</a>
       </div>
     </div>
     <p class="footer-legal-text">Unicâmbio — Instituição de Pagamento, S.A., autorizada e regulada pelo Banco de Portugal, registo nº 824. Capital Social: 2.000.000€. Sede: Aeroporto de Lisboa, Rua C, Edifício 124, 5º Piso, 1700-008 Lisboa. NIF: 502 870 206.</p>
@@ -126,6 +125,8 @@ const UNI_FOOTER = `
 </footer>
 `;
 
+const COOKIE_BANNER = `<div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0d1929;border-top:1px solid rgba(255,209,0,.15);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 -4px 24px rgba(0,0,0,.3);font-size:13px;line-height:1.5;"><p style="margin:0;color:rgba(255,255,255,.7);max-width:800px;">Este site utiliza recursos externos (Google Fonts, mapas Leaflet) que transmitem o seu endereço IP a servidores de terceiros. Consulte a nossa <a href="privacidade.html" style="color:#FFD100;text-decoration:underline;">Política de Privacidade</a>.</p><button onclick="document.getElementById('cookie-banner').remove();localStorage.setItem('uni_notice','1')" style="background:#FFD100;color:#000;border:none;padding:9px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;font-size:13px;">Aceitar e Fechar</button></div>`;
+
 function initNav(activeKey) {
   const navHost = document.getElementById('site-nav');
   if (navHost) navHost.innerHTML = UNI_NAV;
@@ -133,6 +134,9 @@ function initNav(activeKey) {
   if (footerHost) footerHost.innerHTML = UNI_FOOTER;
   const navEl = document.getElementById('nav');
   if (navEl) window.addEventListener('scroll', () => navEl.classList.toggle('sc', scrollY > 56), {passive:true});
+  if (!localStorage.getItem('uni_notice')) {
+    document.body.insertAdjacentHTML('beforeend', COOKIE_BANNER);
+  }
   if (activeKey) {
     const link = document.querySelector(`[data-nav="${activeKey}"]`);
     if (link) link.classList.add('active');
