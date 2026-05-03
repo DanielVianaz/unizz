@@ -386,6 +386,12 @@ a{text-decoration:none;color:inherit;}
 .rev{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease;}
 .rev.in{opacity:1;transform:translateY(0);}
 
+/* ── HERO MOBILE CTA ── */
+.hero-mob-cta{display:none;}
+@media(max-width:860px){
+  .hero-mob-cta{display:flex;align-items:center;justify-content:center;width:100%;margin-top:16px;padding:15px 28px;border-radius:999px;background:var(--gold);color:#000;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;text-decoration:none;transition:background .2s,transform .2s;}
+}
+
 /* ── GOLD STAGE MOBILE ── */
 @media(max-width:860px){
   .gold-stage{height:auto;padding:20px 0;}
@@ -516,15 +522,16 @@ a{text-decoration:none;color:inherit;}
           <div class="app-count">50<sup>+</sup></div>
           <div class="app-note">Preços competitivos · Serviço de confiança desde 1992</div>
           <div class="cur-rows">
-            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/us.png" alt="USD"></span>USD — Dólar Americano</span><span class="cur-tick">✓</span></div>
-            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/gb.png" alt="GBP"></span>GBP — Libra Esterlina</span><span class="cur-tick">✓</span></div>
-            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/br.png" alt="BRL"></span>BRL — Real Brasileiro</span><span class="cur-tick">✓</span></div>
-            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/jp.png" alt="JPY"></span>JPY — Iene Japonês</span><span class="cur-tick">✓</span></div>
-            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/ch.png" alt="CHF"></span>CHF — Franco Suíço</span><span class="cur-tick">✓</span></div>
+            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/us.png" alt="USD" loading="eager"></span>USD — Dólar Americano</span><span class="cur-tick">✓</span></div>
+            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/gb.png" alt="GBP" loading="eager"></span>GBP — Libra Esterlina</span><span class="cur-tick">✓</span></div>
+            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/br.png" alt="BRL" loading="eager"></span>BRL — Real Brasileiro</span><span class="cur-tick">✓</span></div>
+            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/jp.png" alt="JPY" loading="eager"></span>JPY — Iene Japonês</span><span class="cur-tick">✓</span></div>
+            <div class="cur-row"><span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/ch.png" alt="CHF" loading="eager"></span>CHF — Franco Suíço</span><span class="cur-tick">✓</span></div>
           </div>
           <button class="app-cta" onclick="location.href='reserva.html#form'">Reservar Moeda →</button>
         </div>
       </div>
+      <a href="reserva.html#form" class="hero-mob-cta">Reservar Moeda →</a>
     </div>
   </div>
 </section>
@@ -950,7 +957,7 @@ if(qr){[1,0,1,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0,1,0,1,0,1,0,1].forEach(v=>{const c=d
     shown[idx]=next.code;
     row.classList.add('leaving');
     setTimeout(()=>{
-      row.innerHTML=`<span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/${next.flag}.png" alt="${next.code}" loading="lazy"></span>${next.code} — ${next.name}</span><span class="cur-tick">✓</span>`;
+      row.innerHTML=`<span class="name"><span class="cur-flag"><img src="https://flagcdn.com/w40/${next.flag}.png" alt="${next.code}"></span>${next.code} — ${next.name}</span><span class="cur-tick">✓</span>`;
       row.classList.remove('leaving');
       row.classList.add('entering');
       setTimeout(()=>row.classList.remove('entering'),280);
