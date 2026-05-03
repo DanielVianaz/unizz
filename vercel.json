@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/reserva", "destination": "/api/reserva" },
-    { "source": "/api/contacto", "destination": "/api/contacto" },
-    { "source": "/api/denuncia", "destination": "/api/denuncia" },
-    { "source": "/api/candidatura", "destination": "/api/candidatura" }
-  ],
   "headers": [
     {
       "source": "/(.*)",

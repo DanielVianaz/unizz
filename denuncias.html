@@ -325,7 +325,7 @@ document.getElementById('btn-denuncia').addEventListener('click', async () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       const data = await res.json();
-      errGeral.textContent = data.message||'Erro ao submeter. Tente novamente.'; errGeral.style.display='block';
+      errGeral.textContent = data.error||data.message||'Erro ao submeter. Tente novamente.'; errGeral.style.display='block';
       btn.textContent='Submeter Denúncia'; btn.disabled=false;
     }
   } catch {

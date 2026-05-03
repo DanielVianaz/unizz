@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
   if (contentLength > 10240) return res.status(413).json({ error: 'Payload demasiado grande.' });
 
   const forwarded = req.headers['x-forwarded-for'];
-  const ip = forwarded ? forwarded.split(',').pop().trim() : req.socket?.remoteAddress || 'unknown';
+  const ip = forwarded ? forwarded.split(',').shift().trim() : req.socket?.remoteAddress || 'unknown';
   if (await isRateLimited(ip, 'candidatura')) {
     return res.status(429).json({ error: 'Demasiados pedidos. Tente novamente em 1 minuto.' });
   }
