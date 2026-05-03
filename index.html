@@ -47,7 +47,8 @@ a{text-decoration:none;color:inherit;}
 .btn-dark{padding:10px 22px;border-radius:999px;background:var(--gold);color:#000;font-size:14px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:background .15s,transform .15s,box-shadow .15s;}
 .btn-dark:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,209,0,.35);}
 .burger{display:none;background:none;border:1.5px solid var(--gray3);border-radius:9px;width:40px;height:40px;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);}
-@media(max-width:960px){.nav-links{display:none;}.nav-r .btn-ghost{display:none;}.burger{display:flex;}}
+@media(max-width:960px){.nav-links{display:none;}.nav-r .btn-ghost{display:none;}.burger{display:flex;}.wu-nav-logo{display:none;}}
+@media(max-width:720px){.topbar-right{display:none;}}
 
 /* ── HERO ── */
 .hero{min-height:100svh;padding:132px var(--pad) 80px;max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,80px);align-items:center;position:relative;overflow:hidden;}
@@ -382,6 +383,15 @@ a{text-decoration:none;color:inherit;}
 /* ── REVEAL ── */
 .rev{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease;}
 .rev.in{opacity:1;transform:translateY(0);}
+
+/* ── GOLD STAGE MOBILE ── */
+@media(max-width:860px){
+  .gold-stage{height:auto;padding:20px 0;}
+  .gold-scene{width:min(480px,90vw);height:min(480px,90vw);}
+  .gs-rays{width:min(520px,95vw);height:min(520px,95vw);}
+  .gs-carousel{width:min(300px,78vw)!important;height:min(300px,78vw)!important;}
+  .hero{min-height:auto;padding-top:calc(36px + 68px + 32px);}
+}
 </style>
 </head>
 <body>

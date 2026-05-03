@@ -145,9 +145,15 @@ function initNav(activeKey) {
   const navLinks = document.querySelector('.nav-links');
   if (burger && navLinks) {
     burger.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-      burger.setAttribute('aria-expanded', navLinks.classList.contains('open'));
+      const isOpen = navLinks.classList.toggle('open');
+      burger.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
     });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }));
   }
 
   if (!localStorage.getItem('uni_notice')) {
