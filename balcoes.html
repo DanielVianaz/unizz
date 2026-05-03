@@ -420,7 +420,9 @@ const map = L.map('mapa', { zoomControl: true }).setView([39.5, -8.0], 6);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
   maxZoom: 18,
+  subdomains: 'abcd',
 }).addTo(map);
+setTimeout(() => map.invalidateSize(), 100);
 
 function criarIcone(aeroporto) {
   return L.divIcon({
