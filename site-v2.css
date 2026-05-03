@@ -90,7 +90,10 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -0.035em; line-height: 1; }
   .topbar-right { display: none !important; }
 }
 @media (max-width: 960px) {
-  .nav-r .btn-dark { padding: 8px 14px; font-size: 13px; }
+  .nav-r .btn-dark { display: none !important; }
+  .wu-nav-logo { display: flex !important; }
+  .wu-nav-logo img { height: 18px; }
+  .nav-brand a.logo { width: 110px !important; }
 }
 
 /* ============ NAV ============ */
@@ -119,7 +122,7 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -0.035em; line-height: 1; }
 @media(max-width:960px){
   .nav-links{display:none!important;}
   .nav-r .btn-ghost{display:none!important;}
-  .wu-nav-logo{display:none!important;}
+  .wu-nav-logo{display:flex!important;}
   .burger{display:flex!important;}
   .nav-links.open{
     display:flex!important;
