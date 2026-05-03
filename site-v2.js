@@ -61,6 +61,10 @@ const UNI_NAV = `
       </button>
     </div>
   </div>
+  <div class="nav-mob-bar">
+    <a href="reserva.html#form" class="nav-mob-primary">Reservar Moeda</a>
+    <a href="balcoes.html" class="nav-mob-ghost">Ver Balcões</a>
+  </div>
 </nav>
 `;
 

@@ -47,7 +47,9 @@ a{text-decoration:none;color:inherit;}
 .btn-dark{padding:10px 22px;border-radius:999px;background:var(--gold);color:#000;font-size:14px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:background .15s,transform .15s,box-shadow .15s;}
 .btn-dark:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,209,0,.35);}
 .burger{display:none;background:none;border:1.5px solid var(--gray3);border-radius:9px;width:40px;height:40px;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);}
-@media(max-width:960px){.nav-links{display:none;}.nav-r .btn-ghost{display:none;}.nav-r .btn-dark{display:none;}.burger{display:flex;}.wu-nav-logo img{height:20px;}.nav-brand a.logo{width:52px!important;}}
+@media(max-width:960px){.nav-links{display:none;}.nav-r .btn-ghost{display:none;}.nav-r .btn-dark{display:none;}.burger{display:flex;}.nav{height:auto;}}
+.nav-mob-bar{display:none;}
+@media(max-width:960px){.nav-mob-bar{display:flex;gap:8px;padding:0 var(--pad) 10px;}.nav-mob-primary{flex:1;text-align:center;padding:11px 12px;border-radius:999px;background:var(--gold);color:#000;font-size:13px;font-weight:700;text-decoration:none;}.nav-mob-ghost{flex:1;text-align:center;padding:11px 12px;border-radius:999px;border:1.5px solid var(--gray3);color:var(--navy);font-size:13px;font-weight:600;text-decoration:none;}}
 @media(max-width:720px){.topbar-right{display:none!important;}}
 
 /* ── HERO ── */
@@ -462,6 +464,10 @@ a{text-decoration:none;color:inherit;}
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 1h14M1 6h14M1 11h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
     </div>
+  </div>
+  <div class="nav-mob-bar">
+    <a href="reserva.html#form" class="nav-mob-primary">Reservar Moeda</a>
+    <a href="balcoes.html" class="nav-mob-ghost">Ver Balcões</a>
   </div>
 </nav>
 
