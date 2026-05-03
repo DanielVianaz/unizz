@@ -163,3 +163,8 @@ function initNav(activeKey) {
 }
 
 window.initNav = initNav;
+
+// Auto-init if inline script was blocked by CSP
+if (document.getElementById('site-nav') && !document.getElementById('nav')) {
+  initNav('');
+}
